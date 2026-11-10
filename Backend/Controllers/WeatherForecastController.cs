@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace MercBooking.Api.Controllers;
 
 [ApiController]

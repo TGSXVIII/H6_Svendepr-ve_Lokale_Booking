@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace MercBooking.Api.Data;
 
 public class AppDbContext : DbContext
