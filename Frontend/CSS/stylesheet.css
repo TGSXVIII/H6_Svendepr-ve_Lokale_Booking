@@ -1,0 +1,68 @@
+/* Forsidens baggrund */
+.home {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 100px 24px 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-image: url("../../Utilities/Images/Mercantec_Skole.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Området med logo, velkomsttekst og knap */
+.welcome {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+/* Stort logo */
+.welcome-logo {
+    display: block;
+    width: 550px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Hvid boks med velkomsttekst */
+.welcome-card {
+    width: 100%;
+    padding: 22px 26px;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+.welcome-card h1 {
+    margin: 0 0 10px;
+    font-size: 24px;
+}
+
+.welcome-card p {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+/* Tilpasning til mindre skærme */
+@media (max-width: 600px) {
+    .welcome-logo {
+        width: 260px;
+    }
+
+    .welcome-card h1 {
+        font-size: 21px;
+    }
+
+    .welcome-card p {
+        font-size: 16px;
+    }
+}

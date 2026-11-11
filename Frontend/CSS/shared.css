@@ -1,0 +1,204 @@
+:root {
+    --brand-blue: #211bb0;
+    --brand-blue-dark: #171280;
+    --text-color: #171717;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text-color);
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+/* Fælles knapper */
+.button {
+    display: inline-block;
+    padding: 14px 24px;
+    border-radius: 24px;
+
+    color: #fff;
+    background-color: var(--brand-blue);
+    text-decoration: none;
+    font-size: 18px;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: var(--brand-blue-dark);
+}
+
+.button-secondary {
+    color: var(--brand-blue);
+    background-color: #eeeeff;
+}
+
+.button-secondary:hover {
+    background-color: #ddddff;
+}
+
+/* Synlig markering ved navigation med tastatur */
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid #f5b942;
+    outline-offset: 4px;
+}
+
+/* Burgerknap */
+.site-header {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}
+
+.menu-toggle {
+    width: 56px;
+    height: 56px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #fff;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 5px;
+    background-color: var(--brand-blue);
+}
+
+/* Burgermenu */
+.navigation-menu {
+    position: fixed;
+    inset: 0 0 0 auto;
+    margin: 0;
+    padding: 80px 24px 32px;
+
+    width: min(320px, 90vw);
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+
+    border: none;
+    color: #fff;
+    background-color: var(--brand-blue);
+}
+
+.navigation-menu::backdrop {
+    background-color: rgb(0 0 0 / 45%);
+}
+
+.menu-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+
+    border: none;
+    background: none;
+    color: #fff;
+    font-size: 42px;
+    cursor: pointer;
+}
+
+.navigation-menu nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.navigation-menu nav a {
+    padding: 14px 16px;
+    border-radius: 8px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.navigation-menu nav a:hover,
+.navigation-menu nav a[aria-current="page"] {
+    background-color: rgb(255 255 255 / 15%);
+}
+
+/* Fælles formularer */
+.account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-align: left;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-field label {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    min-width: 0;
+    padding: 13px 14px;
+
+    border: 1px solid #c9c9d4;
+    border-radius: 10px;
+
+    background-color: #f8f8fc;
+    color: var(--text-color);
+    font: inherit;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    border-color: var(--brand-blue);
+    outline: 2px solid var(--brand-blue);
+    outline-offset: 2px;
+}
+
+.account-form .button {
+    width: 100%;
+    margin-top: 6px;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.auth-card .form-message {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.form-message:empty {
+    display: none;
+}
+
+.auth-card .account-switch {
+    margin: 24px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.account-switch a {
+    color: var(--brand-blue);
+    font-weight: 600;
+}
+
+.account-alternative {
+    width: 100%;
+}
