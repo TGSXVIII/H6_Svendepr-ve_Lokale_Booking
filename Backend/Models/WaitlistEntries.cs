@@ -9,7 +9,8 @@ public class WaitlistEntries
     public DateTime RequestedEnd { get; set; }
     public string Comment { get; set; }
     public int ParticipantCount { get; set; }
-    public enum Status { approved, Pending, rejected }
+    public WaitlistStatus status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
+public enum WaitlistStatus { approved, Pending, rejected }

@@ -49,6 +49,9 @@ namespace MercBooking.Api.Migrations
                     b.Property<int>("ReviewedByIdId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -94,6 +97,9 @@ namespace MercBooking.Api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("RoomIdId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -189,6 +195,10 @@ namespace MercBooking.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("role")
                         .HasColumnType("integer");
 
@@ -230,6 +240,9 @@ namespace MercBooking.Api.Migrations
                     b.Property<int>("UserIdId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("status")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("RoomIdId");
@@ -252,6 +265,9 @@ namespace MercBooking.Api.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
