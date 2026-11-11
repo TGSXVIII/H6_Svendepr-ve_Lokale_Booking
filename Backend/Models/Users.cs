@@ -6,6 +6,6 @@ public class Users
     public string Username { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public enum Role { Student, Teacher, Admin }
     public Role role { get; set; }
 }
+public enum Role { Student, Teacher, Admin }

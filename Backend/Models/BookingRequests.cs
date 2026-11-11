@@ -9,8 +9,9 @@ public class BookingRequests
     public DateTime BookedFrom { get; set; }
     public DateTime BookedTo { get; set; }
     public string Comment { get; set; }
+    public RequestStatus Status { get; set; }
     public int ParticipantCount { get; set; }
-    public enum Status { approved, Pending, rejected }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
+public enum RequestStatus { approved, Pending, rejected }
