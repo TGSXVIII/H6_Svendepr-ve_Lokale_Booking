@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merc Booking – Forside</title>
+
+    <link rel="stylesheet" href="../CSS/stylesheet.css">
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <script src="../JavaScript/script.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Åbn menu"
+            aria-controls="navigationMenu"
+            aria-expanded="false"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <main class="home">
+        <section class="welcome" aria-labelledby="welcomeTitle">
+            <img
+                class="welcome-logo"
+                src="../../Utilities/Images/Merc_booking.png"
+                alt="Merc Booking"
+            >
+
+            <div class="welcome-card">
+                <h1 id="welcomeTitle">Velkommen til Merc Booking</h1>
+                <p>
+                    Find det rette lokale til undervisning, gruppearbejde
+                    eller møder. Få overblik over skolens lokaler,
+                    og se, hvornår de er ledige.
+                </p>
+            </div>
+
+            <a class="button" href="lokaleoversigt.html">
+                Find et lokale
+            </a>
+        </section>
+    </main>
+
+    <dialog class="navigation-menu" id="navigationMenu" aria-label="Hovedmenu">
+        <button
+                class="menu-close"
+                id="menuClose"
+                type="button"
+                aria-label="Luk menu"
+        >
+            &times;
+        </button>
+
+        <nav aria-label="Navigation">
+            <a href="dashboard.html" aria-current="page">Forside</a>
+            <a href="lokaleoversigt.html">Lokaleoversigt</a>
+            <a href="auth.html">Log ind / Opret konto</a>
+        </nav>
+    </dialog>
+</body>
+</html>
