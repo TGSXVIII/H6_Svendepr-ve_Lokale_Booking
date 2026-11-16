@@ -22,7 +22,7 @@ public class RoomsController : ControllerBase
                 number = r.number,
                 Capacity = r.Capacity,
                 isActive = r.isActive,
-                CategoryId = r.CategoryId
+                CategoryId = r.Category
             })
             .ToListAsync();
 
@@ -43,7 +43,7 @@ public class RoomsController : ControllerBase
                 number = r.number,
                 Capacity = r.Capacity,
                 isActive = r.isActive,
-                CategoryId = r.CategoryId
+                CategoryId = r.Category
             })
             .FirstOrDefaultAsync();
 
@@ -64,7 +64,7 @@ public class RoomsController : ControllerBase
             number = roomDTO.number,
             Capacity = roomDTO.Capacity,
             isActive = true,
-            CategoryId = roomDTO.CategoryId
+            Category = roomDTO.CategoryId
         };
 
         _context.Rooms.Add(newRoom);
@@ -78,7 +78,7 @@ public class RoomsController : ControllerBase
             number = newRoom.number,
             Capacity = newRoom.Capacity,
             isActive = newRoom.isActive,
-            CategoryId = newRoom.CategoryId
+            CategoryId = newRoom.Category
         };
 
         return CreatedAtAction(nameof(GetById), new { id = room.Id }, room);
@@ -98,7 +98,7 @@ public class RoomsController : ControllerBase
         room.number = roomDTO.number;
         room.Capacity = roomDTO.Capacity;
         room.isActive = roomDTO.isActive;
-        room.CategoryId = roomDTO.CategoryId;
+        room.Category = roomDTO.CategoryId;
 
         await _context.SaveChangesAsync();
 

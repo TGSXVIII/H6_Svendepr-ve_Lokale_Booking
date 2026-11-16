@@ -1,7 +1,8 @@
 ﻿namespace MercBooking.Api.Models;
 
-public class equipment
+public class Equipment
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public ICollection<RoomEquipment> RoomEquipment { get; set; } = new List<RoomEquipment>();
 }
