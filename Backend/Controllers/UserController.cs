@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
     }
 
     // POST: api/users
-    [HttpPost("register")]
+    [HttpPost("Register")]
     public async Task<IActionResult> Create(UserCreateDTO userDTO)
     {
         Users newUser = new Users
