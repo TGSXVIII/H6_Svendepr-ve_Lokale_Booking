@@ -1,0 +1,122 @@
+[ApiController]
+[Route("api/[controller]")]
+public class RoomsController : ControllerBase
+{
+    private readonly AppDbContext _context;
+
+    public RoomsController(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    // GET: api/rooms
+    [HttpGet("getAll")]
+    public async Task<IActionResult> GetAll()
+    {
+        var rooms = await _context.Rooms
+            .Select(r => new RoomGetDTO
+            {
+                Id = r.Id,
+                Name = r.Name,
+                floor = r.floor,
+                number = r.number,
+                Capacity = r.Capacity,
+                isActive = r.isActive,
+                CategoryId = r.CategoryId
+            })
+            .ToListAsync();
+
+        return Ok(rooms);
+    }
+
+    // GET: api/rooms/5
+    [HttpGet("GetRoom/{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var room = await _context.Rooms
+            .Where(r => r.Id == id)
+            .Select(r => new RoomGetDTO
+            {
+                Id = r.Id,
+                Name = r.Name,
+                floor = r.floor,
+                number = r.number,
+                Capacity = r.Capacity,
+                isActive = r.isActive,
+                CategoryId = r.CategoryId
+            })
+            .FirstOrDefaultAsync();
+
+        if (room == null)
+            return NotFound();
+
+        return Ok(room);
+    }
+
+    // POST: api/rooms
+    [HttpPost("Create")]
+    public async Task<IActionResult> Create(RoomCreateDTO roomDTO)
+    {
+        Rooms newRoom = new Rooms
+        {
+            Name = roomDTO.Name,
+            floor = roomDTO.floor,
+            number = roomDTO.number,
+            Capacity = roomDTO.Capacity,
+            isActive = true,
+            CategoryId = roomDTO.CategoryId
+        };
+
+        _context.Rooms.Add(newRoom);
+        await _context.SaveChangesAsync();
+
+        RoomGetDTO room = new RoomGetDTO
+        {
+            Id = newRoom.Id,
+            Name = newRoom.Name,
+            floor = newRoom.floor,
+            number = newRoom.number,
+            Capacity = newRoom.Capacity,
+            isActive = newRoom.isActive,
+            CategoryId = newRoom.CategoryId
+        };
+
+        return CreatedAtAction(nameof(GetById), new { id = room.Id }, room);
+    }
+
+    // PUT: api/rooms/5
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> Update(int id, RoomUpdateDTO roomDTO)
+    {
+        var room = await _context.Rooms.FindAsync(id);
+
+        if (room == null)
+            return NotFound();
+
+        room.Name = roomDTO.Name;
+        room.floor = roomDTO.floor;
+        room.number = roomDTO.number;
+        room.Capacity = roomDTO.Capacity;
+        room.isActive = roomDTO.isActive;
+        room.CategoryId = roomDTO.CategoryId;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    // DELETE: api/rooms/5
+    [HttpDelete("Delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var room = await _context.Rooms.FindAsync(id);
+
+        if (room == null)
+            return NotFound();
+
+        _context.Rooms.Remove(room);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+}
