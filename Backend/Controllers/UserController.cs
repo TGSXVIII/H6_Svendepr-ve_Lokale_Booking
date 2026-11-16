@@ -36,12 +36,26 @@ public class UsersController : ControllerBase
     }
 
     // POST: api/users
-    [HttpPost]
-    public async Task<IActionResult> Create(Users user)
+    [HttpPost("register")]
+    public async Task<IActionResult> Create(UserCreateDTO userDTO)
     {
-        user.Password = _passwordHasher.HashPassword(user, user.Password);
-        _context.Users.Add(user);
+        Users newUser = new Users
+        {
+            Username = userDTO.Username,
+            Email = userDTO.Email,
+            role = Role.Student // Default role
+        };
+        newUser.Password = _passwordHasher.HashPassword(newUser, userDTO.Password);
+        _context.Users.Add(newUser);
         await _context.SaveChangesAsync();
+
+        UserGetDTO user = new UserGetDTO
+        {
+            Id = newUser.Id,
+            Username = newUser.Username,
+            Email = newUser.Email,
+            Role = newUser.role.ToString()
+        };
 
         return CreatedAtAction(
             nameof(GetById),
@@ -49,6 +63,7 @@ public class UsersController : ControllerBase
             user
         );
     }
+    
 
     // PUT: api/users/5
     [HttpPut("{id}")]
