@@ -1,7 +1,3 @@
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 [ApiController]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
@@ -16,7 +12,7 @@ public class UsersController : ControllerBase
     }
 
     // GET: api/users
-    [HttpGet]
+    [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
         var users = await _context.Users.ToListAsync();
@@ -24,7 +20,7 @@ public class UsersController : ControllerBase
     }
 
     // GET: api/users/5
-    [HttpGet("{id}")]
+    [HttpGet("GetUser/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var user = await _context.Users.FindAsync(id);
@@ -66,7 +62,7 @@ public class UsersController : ControllerBase
     
 
     // PUT: api/users/5
-    [HttpPut("{id}")]
+    [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, Users updatedUser)
     {
         var user = await _context.Users.FindAsync(id);
@@ -99,7 +95,7 @@ public class UsersController : ControllerBase
     }
 
     // DELETE: api/users/5
-    [HttpDelete("{id}")]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var user = await _context.Users.FindAsync(id);
