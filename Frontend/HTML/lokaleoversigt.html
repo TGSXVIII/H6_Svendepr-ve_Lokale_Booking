@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merc Booking – Lokaleoversigt</title>
+
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/lokaleoversigt.css">
+
+    <script src="../JavaScript/script.js" defer></script>
+    <script src="../JavaScript/authSession.js" defer></script>
+    <script src="../JavaScript/lokaleoversigt.js" defer></script>
+</head>
+
+<body class="rooms-page">
+    <header class="site-header">
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            type="button"
+            aria-label="Åbn menu"
+            aria-controls="navigationMenu"
+            aria-expanded="false"
+        >
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <main class="rooms-panel">
+        <a href="dashboard.html" aria-label="Til forsiden">
+            <img
+                class="rooms-logo"
+                src="../../Utilities/Images/Merc_Booking.png"
+                alt="Merc Booking"
+            >
+        </a>
+
+        <h1>Find og book et lokale</h1>
+        <p>Vælg et tidspunkt og find et lokale, der passer til dit behov.</p>
+        <p class="demo-notice">
+            Forhåndsvisning med eksempeldata. Bookinger gemmes ikke.
+        </p>
+
+        <form id="roomSearchForm" class="room-filters">
+            <div class="form-field">
+                <label for="bookingDate">Dato</label>
+                <input type="date" id="bookingDate" required>
+            </div>
+
+            <div class="form-field">
+                <label for="startTime">Fra kl.</label>
+                <select id="startTime" required>
+                    <option value="">Vælg starttidspunkt</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="endTime">Til kl.</label>
+                <select id="endTime" required disabled>
+                    <option value="">Vælg starttidspunkt først</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="participants">Antal deltagere</label>
+                <input
+                    type="number"
+                    id="participants"
+                    min="1"
+                    step="1"
+                    value="1"
+                    required
+                >
+            </div>
+
+            <div class="form-field">
+                <label for="floor">Etage</label>
+                <select id="floor">
+                    <option value="">Alle etager</option>
+                    <option value="0">Stueetage</option>
+                    <option value="1">1. sal</option>
+                    <option value="2">2. sal</option>
+                </select>
+            </div>
+
+            <fieldset class="equipment-filter">
+                <legend>Udstyr</legend>
+
+                <label>
+                    <input type="checkbox" name="equipment" value="Projektor">
+                    Projektor
+                </label>
+
+                <label>
+                    <input type="checkbox" name="equipment" value="Whiteboard">
+                    Whiteboard
+                </label>
+            </fieldset>
+
+            <button class="button search-button" type="submit">
+                Find lokaler
+            </button>
+        </form>
+
+        <p id="searchMessage" role="status"></p>
+
+        <div class="rooms-grid" id="roomsGrid"></div>
+    </main>
+
+    <dialog class="navigation-menu" id="navigationMenu" aria-label="Hovedmenu">
+        <button
+            class="menu-close"
+            id="menuClose"
+            type="button"
+            aria-label="Luk menu"
+        >
+            &times;
+        </button>
+
+        <nav aria-label="Navigation">
+            <a href="dashboard.html">Forside</a>
+            <a href="lokaleoversigt.html" aria-current="page">
+                Lokaleoversigt
+            </a>
+            <a href="auth.html">Log ind / Opret konto</a>
+        </nav>
+    </dialog>
+
+    <dialog class="booking-dialog" id="bookingDialog" aria-labelledby="bookingTitle">
+        <form id="bookingForm" class="account-form" method="post">
+            <div class="booking-heading">
+                <h2 id="bookingTitle">Book lokale</h2>
+
+                <button
+                    class="booking-close"
+                    id="closeBooking"
+                    type="button"
+                    aria-label="Luk booking"
+                >
+                    &times;
+                </button>
+            </div>
+
+            <p id="bookingSummary"></p>
+
+            <div class="form-field">
+                <label for="bookingPurpose">Formål</label>
+                <input
+                    type="text"
+                    id="bookingPurpose"
+                    name="purpose"
+                    placeholder="Eksempelvis gruppearbejde"
+                    required
+                >
+            </div>
+
+            <p class="demo-notice">
+                Dette er en forhåndsvisning. Der oprettes ingen booking.
+            </p>
+
+            <button class="button" type="submit">
+                Afprøv booking
+            </button>
+
+            <p id="bookingMessage" class="form-message" role="status"></p>
+        </form>
+    </dialog>
+</body>
+</html>

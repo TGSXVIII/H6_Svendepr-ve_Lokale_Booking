@@ -1,0 +1,31 @@
+.signup-card {
+    max-width: 440px;
+}
+
+.signup-card .auth-logo {
+    margin-bottom: 24px;
+}
+
+.password-requirements {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+
+    color: #555;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.password-requirements li::before {
+    content: "○";
+    display: inline-block;
+    width: 22px;
+}
+
+.password-requirements li.is-valid {
+    color: #146c36;
+}
+
+.password-requirements li.is-valid::before {
+    content: "✓";
+}

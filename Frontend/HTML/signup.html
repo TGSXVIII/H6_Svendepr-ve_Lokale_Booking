@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merc Booking – Opret konto</title>
+
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/auth.css">
+    <link rel="stylesheet" href="../CSS/signup.css">
+
+    <script src="../JavaScript/signup.js" defer></script>
+</head>
+
+<body class="auth-page">
+    <main class="auth-card signup-card">
+        <a
+            class="auth-back-arrow"
+            href="auth.html"
+            aria-label="Tilbage til login og oprettelse"
+            title="Tilbage"
+        >
+            <span aria-hidden="true">←</span>
+        </a>
+
+        <a href="dashboard.html" aria-label="Til forsiden">
+            <img
+                class="auth-logo"
+                src="../../Utilities/Images/Merc_Booking.png"
+                alt="Merc Booking"
+            >
+        </a>
+
+        <h1>Opret konto</h1>
+        <p>Udfyld dine oplysninger for at komme i gang.</p>
+
+        <form id="signupForm" class="account-form" method="post">
+            <div class="form-field">
+                <label for="username">Brugernavn</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    autocomplete="username"
+                    placeholder="Dit brugernavn"
+                    required
+                >
+            </div>
+
+            <div class="form-field">
+                <label for="email">E-mail</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="email"
+                    placeholder="Din e-mailadresse"
+                    required
+                >
+            </div>
+
+            <div class="form-field">
+                <label for="password">Adgangskode</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="new-password"
+                    placeholder="Vælg en adgangskode"
+                    aria-describedby="passwordRequirements"
+                    required
+                >
+
+                <ul class="password-requirements" id="passwordRequirements">
+                    <li id="passwordLength">Mindst 8 tegn</li>
+                    <li id="passwordUppercase">Mindst ét stort bogstav</li>
+                    <li id="passwordSpecial">Mindst ét specialtegn</li>
+                </ul>
+            </div>
+
+            <div class="form-field">
+                <label for="confirmPassword">Gentag adgangskode</label>
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    autocomplete="new-password"
+                    placeholder="Gentag din adgangskode"
+                    required
+                >
+            </div>
+
+            <!-- Uddannelse og forløb tilføjes her senere. -->
+
+            <button class="button" type="submit">Opret konto</button>
+
+            <p class="form-message" id="signupMessage" role="status"></p>
+        </form>
+
+        <div class="auth-divider">
+            <span>eller</span>
+        </div>
+
+        <a class="button button-secondary account-alternative" href="login.html">
+            Log ind
+        </a>
+    </main>
+</body>
+</html>

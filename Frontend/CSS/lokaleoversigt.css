@@ -1,0 +1,185 @@
+.rooms-page {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 100px 24px 40px;
+
+    background-color: var(--brand-blue);
+    background-image:
+        linear-gradient(rgb(255 255 255 / 25%), rgb(255 255 255 / 25%)),
+        url("../../Utilities/Images/Mercantec_Skole.jpg");
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.rooms-panel {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+.rooms-logo {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 24px;
+}
+
+.rooms-panel h1 {
+    margin: 0 0 12px;
+}
+
+.demo-notice {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.room-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin: 28px 0;
+}
+
+.equipment-filter {
+    min-width: 0;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid #c9c9d4;
+    border-radius: 10px;
+}
+
+.equipment-filter legend {
+    padding: 0 4px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.equipment-filter label {
+    display: block;
+    margin: 6px 0;
+}
+
+.search-button {
+    grid-column: 1 / -1;
+    justify-self: start;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.room-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 24px;
+    border: 1px solid #dedee8;
+    border-radius: 16px;
+    background-color: #fafaff;
+}
+
+.room-card h2,
+.room-card p {
+    margin: 0;
+}
+
+.room-card h2 {
+    font-size: 21px;
+}
+
+.room-card p {
+    line-height: 1.5;
+}
+
+.room-status {
+    color: #555;
+    font-size: 14px;
+}
+
+.room-card .button {
+    margin-top: auto;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.room-card .button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.booking-dialog {
+    width: min(460px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 28px;
+    border: none;
+    border-radius: 20px;
+    color: var(--text-color);
+}
+
+.booking-dialog::backdrop {
+    background-color: rgb(0 0 0 / 50%);
+}
+
+.booking-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.booking-heading h2 {
+    margin: 0;
+}
+
+.booking-close {
+    padding: 0 8px;
+    border: none;
+    background: none;
+    color: var(--brand-blue);
+    font-size: 32px;
+    cursor: pointer;
+}
+
+#bookingSummary {
+    margin: 0;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+@media (max-width: 900px) {
+    .room-filters,
+    .rooms-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .rooms-page {
+        padding: 90px 16px 24px;
+    }
+
+    .rooms-panel {
+        padding: 24px 18px;
+    }
+
+    .room-filters,
+    .rooms-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+}
