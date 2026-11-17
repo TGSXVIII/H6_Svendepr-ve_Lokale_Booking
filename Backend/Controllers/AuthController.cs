@@ -78,7 +78,7 @@ public class AuthController : ControllerBase
     // GET: api/auth/CurrentUser
     [Authorize]
     [HttpGet("CurrentUser")]
-    public async Task<IActionResult> Me()
+    public async Task<IActionResult> CurrentUser()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
  
