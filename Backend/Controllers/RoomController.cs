@@ -10,10 +10,12 @@ public class RoomsController : ControllerBase
     }
 
     // GET: api/rooms
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
         var rooms = await _context.Rooms
+            .Include(r => r.Category)
             .Select(r => new RoomGetDTO
             {
                 Id = r.Id,
@@ -22,7 +24,7 @@ public class RoomsController : ControllerBase
                 number = r.number,
                 Capacity = r.Capacity,
                 isActive = r.isActive,
-                CategoryId = r.CategoryId
+                Category = r.Category
             })
             .ToListAsync();
 
@@ -30,11 +32,13 @@ public class RoomsController : ControllerBase
     }
 
     // GET: api/rooms/5
+    [Authorize]
     [HttpGet("GetRoom/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var room = await _context.Rooms
             .Where(r => r.Id == id)
+            .Include(r => r.Category)
             .Select(r => new RoomGetDTO
             {
                 Id = r.Id,
@@ -43,7 +47,7 @@ public class RoomsController : ControllerBase
                 number = r.number,
                 Capacity = r.Capacity,
                 isActive = r.isActive,
-                CategoryId = r.CategoryId
+                Category = r.Category
             })
             .FirstOrDefaultAsync();
 
@@ -54,9 +58,16 @@ public class RoomsController : ControllerBase
     }
 
     // POST: api/rooms
+    [Authorize]
     [HttpPost("Create")]
     public async Task<IActionResult> Create(RoomCreateDTO roomDTO)
     {
+        
+        var category = await _context.Categories.FindAsync(roomDTO.CategoryId);
+
+        if (category == null)
+            return BadRequest("Category does not exist.");
+
         Rooms newRoom = new Rooms
         {
             Name = roomDTO.Name,
@@ -64,7 +75,8 @@ public class RoomsController : ControllerBase
             number = roomDTO.number,
             Capacity = roomDTO.Capacity,
             isActive = true,
-            CategoryId = roomDTO.CategoryId
+            CategoryId = roomDTO.CategoryId,
+            Category = category
         };
 
         _context.Rooms.Add(newRoom);
@@ -78,13 +90,14 @@ public class RoomsController : ControllerBase
             number = newRoom.number,
             Capacity = newRoom.Capacity,
             isActive = newRoom.isActive,
-            CategoryId = newRoom.CategoryId
+            Category = newRoom.Category
         };
 
         return CreatedAtAction(nameof(GetById), new { id = room.Id }, room);
     }
 
     // PUT: api/rooms/5
+    [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, RoomUpdateDTO roomDTO)
     {
@@ -106,6 +119,7 @@ public class RoomsController : ControllerBase
     }
 
     // DELETE: api/rooms/5
+    [Authorize]
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

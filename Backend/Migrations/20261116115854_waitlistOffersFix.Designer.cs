@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MercBooking.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261110133954_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20261116115854_waitlistOffersFix")]
+    partial class waitlistOffersFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,25 +49,28 @@ namespace MercBooking.Api.Migrations
                     b.Property<int>("ParticipantCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ReviewedByIdId")
+                    b.Property<int?>("ReviewedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserIdId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("roomIdId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReviewedByIdId");
+                    b.HasIndex("ReviewedById");
 
-                    b.HasIndex("UserIdId");
+                    b.HasIndex("RoomId");
 
-                    b.HasIndex("roomIdId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("BookingRequests");
                 });
@@ -96,22 +99,59 @@ namespace MercBooking.Api.Migrations
                     b.Property<DateTime>("RequestedStart")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("RoomIdId")
+                    b.Property<int>("RoomId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserIdId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomIdId");
+                    b.HasIndex("RoomId");
 
-                    b.HasIndex("UserIdId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("MercBooking.Api.Models.Categories", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("MercBooking.Api.Models.Equipment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Equipment");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.RoomEquipment", b =>
@@ -122,20 +162,20 @@ namespace MercBooking.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EquipmentIdId")
+                    b.Property<int>("EquipmentId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RoomIdId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EquipmentIdId");
+                    b.HasIndex("EquipmentId");
 
-                    b.HasIndex("RoomIdId");
+                    b.HasIndex("RoomId");
 
                     b.ToTable("RoomEquipment");
                 });
@@ -151,7 +191,7 @@ namespace MercBooking.Api.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CategoryIdId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -171,7 +211,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryIdId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Rooms");
                 });
@@ -189,6 +229,10 @@ namespace MercBooking.Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -224,20 +268,23 @@ namespace MercBooking.Api.Migrations
                     b.Property<DateTime>("RequestedStart")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("RoomIdId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserIdId")
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("status")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomIdId");
+                    b.HasIndex("RoomId");
 
-                    b.HasIndex("UserIdId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("WaitlistEntries");
                 });
@@ -250,173 +297,150 @@ namespace MercBooking.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookingIdId")
+                    b.Property<int>("BookingId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("WaitlistEntryIdId")
+                    b.Property<int>("WaitlistEntryId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookingIdId");
+                    b.HasIndex("BookingId");
 
-                    b.HasIndex("WaitlistEntryIdId");
+                    b.HasIndex("WaitlistEntryId");
 
                     b.ToTable("WaitlistOffers");
                 });
 
-            modelBuilder.Entity("MercBooking.Api.Models.categories", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("MercBooking.Api.Models.equipment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Equipment");
-                });
-
             modelBuilder.Entity("MercBooking.Api.Models.BookingRequests", b =>
                 {
-                    b.HasOne("MercBooking.Api.Models.Users", "ReviewedById")
+                    b.HasOne("MercBooking.Api.Models.Users", "ReviewedBy")
                         .WithMany()
-                        .HasForeignKey("ReviewedByIdId")
+                        .HasForeignKey("ReviewedById");
+
+                    b.HasOne("MercBooking.Api.Models.Rooms", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MercBooking.Api.Models.Users", "UserId")
+                    b.HasOne("MercBooking.Api.Models.Users", "User")
                         .WithMany()
-                        .HasForeignKey("UserIdId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MercBooking.Api.Models.Rooms", "roomId")
-                        .WithMany()
-                        .HasForeignKey("roomIdId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("ReviewedBy");
 
-                    b.Navigation("ReviewedById");
+                    b.Navigation("Room");
 
-                    b.Navigation("UserId");
-
-                    b.Navigation("roomId");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.Bookings", b =>
                 {
-                    b.HasOne("MercBooking.Api.Models.Rooms", "RoomId")
+                    b.HasOne("MercBooking.Api.Models.Rooms", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomIdId")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MercBooking.Api.Models.Users", "UserId")
+                    b.HasOne("MercBooking.Api.Models.Users", "User")
                         .WithMany()
-                        .HasForeignKey("UserIdId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("RoomId");
+                    b.Navigation("Room");
 
-                    b.Navigation("UserId");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.RoomEquipment", b =>
                 {
-                    b.HasOne("MercBooking.Api.Models.equipment", "EquipmentId")
-                        .WithMany()
-                        .HasForeignKey("EquipmentIdId")
+                    b.HasOne("MercBooking.Api.Models.Equipment", "Equipment")
+                        .WithMany("RoomEquipment")
+                        .HasForeignKey("EquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MercBooking.Api.Models.Rooms", "RoomId")
-                        .WithMany()
-                        .HasForeignKey("RoomIdId")
+                    b.HasOne("MercBooking.Api.Models.Rooms", "Room")
+                        .WithMany("RoomEquipment")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("EquipmentId");
+                    b.Navigation("Equipment");
 
-                    b.Navigation("RoomId");
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.Rooms", b =>
                 {
-                    b.HasOne("MercBooking.Api.Models.categories", "CategoryId")
+                    b.HasOne("MercBooking.Api.Models.Categories", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryIdId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CategoryId");
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.WaitlistEntries", b =>
                 {
-                    b.HasOne("MercBooking.Api.Models.Rooms", "RoomId")
+                    b.HasOne("MercBooking.Api.Models.Rooms", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomIdId")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MercBooking.Api.Models.Users", "UserId")
+                    b.HasOne("MercBooking.Api.Models.Users", "User")
                         .WithMany()
-                        .HasForeignKey("UserIdId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("RoomId");
+                    b.Navigation("Room");
 
-                    b.Navigation("UserId");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.WaitlistOffers", b =>
                 {
-                    b.HasOne("MercBooking.Api.Models.Bookings", "BookingId")
+                    b.HasOne("MercBooking.Api.Models.Bookings", "Booking")
                         .WithMany()
-                        .HasForeignKey("BookingIdId")
+                        .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MercBooking.Api.Models.WaitlistEntries", "WaitlistEntryId")
+                    b.HasOne("MercBooking.Api.Models.WaitlistEntries", "WaitlistEntry")
                         .WithMany()
-                        .HasForeignKey("WaitlistEntryIdId")
+                        .HasForeignKey("WaitlistEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BookingId");
+                    b.Navigation("Booking");
 
-                    b.Navigation("WaitlistEntryId");
+                    b.Navigation("WaitlistEntry");
+                });
+
+            modelBuilder.Entity("MercBooking.Api.Models.Equipment", b =>
+                {
+                    b.Navigation("RoomEquipment");
+                });
+
+            modelBuilder.Entity("MercBooking.Api.Models.Rooms", b =>
+                {
+                    b.Navigation("RoomEquipment");
                 });
 #pragma warning restore 612, 618
         }

@@ -44,6 +44,7 @@ namespace MercBooking.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Username = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     role = table.Column<int>(type: "integer", nullable: false)
@@ -64,14 +65,14 @@ namespace MercBooking.Api.Migrations
                     number = table.Column<string>(type: "text", nullable: false),
                     Capacity = table.Column<int>(type: "integer", nullable: false),
                     isActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CategoryIdId = table.Column<int>(type: "integer", nullable: false)
+                    CategoryId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Rooms_Categories_CategoryIdId",
-                        column: x => x.CategoryIdId,
+                        name: "FK_Rooms_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -83,12 +84,13 @@ namespace MercBooking.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserIdId = table.Column<int>(type: "integer", nullable: false),
-                    roomIdId = table.Column<int>(type: "integer", nullable: false),
-                    ReviewedByIdId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoomId = table.Column<int>(type: "integer", nullable: false),
+                    ReviewedById = table.Column<int>(type: "integer", nullable: true),
                     BookedFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     BookedTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Comment = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     ParticipantCount = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -97,20 +99,19 @@ namespace MercBooking.Api.Migrations
                 {
                     table.PrimaryKey("PK_BookingRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BookingRequests_Rooms_roomIdId",
-                        column: x => x.roomIdId,
+                        name: "FK_BookingRequests_Rooms_RoomId",
+                        column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookingRequests_Users_ReviewedByIdId",
-                        column: x => x.ReviewedByIdId,
+                        name: "FK_BookingRequests_Users_ReviewedById",
+                        column: x => x.ReviewedById,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_BookingRequests_Users_UserIdId",
-                        column: x => x.UserIdId,
+                        name: "FK_BookingRequests_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -122,11 +123,12 @@ namespace MercBooking.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserIdId = table.Column<int>(type: "integer", nullable: false),
-                    RoomIdId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoomId = table.Column<int>(type: "integer", nullable: false),
                     RequestedStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     RequestedEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Comment = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     ParticipantCount = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -135,14 +137,14 @@ namespace MercBooking.Api.Migrations
                 {
                     table.PrimaryKey("PK_Bookings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bookings_Rooms_RoomIdId",
-                        column: x => x.RoomIdId,
+                        name: "FK_Bookings_Rooms_RoomId",
+                        column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bookings_Users_UserIdId",
-                        column: x => x.UserIdId,
+                        name: "FK_Bookings_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -154,22 +156,22 @@ namespace MercBooking.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoomIdId = table.Column<int>(type: "integer", nullable: false),
-                    EquipmentIdId = table.Column<int>(type: "integer", nullable: false),
+                    RoomId = table.Column<int>(type: "integer", nullable: false),
+                    EquipmentId = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RoomEquipment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoomEquipment_Equipment_EquipmentIdId",
-                        column: x => x.EquipmentIdId,
+                        name: "FK_RoomEquipment_Equipment_EquipmentId",
+                        column: x => x.EquipmentId,
                         principalTable: "Equipment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RoomEquipment_Rooms_RoomIdId",
-                        column: x => x.RoomIdId,
+                        name: "FK_RoomEquipment_Rooms_RoomId",
+                        column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -181,12 +183,13 @@ namespace MercBooking.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserIdId = table.Column<int>(type: "integer", nullable: false),
-                    RoomIdId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoomId = table.Column<int>(type: "integer", nullable: false),
                     RequestedStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     RequestedEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Comment = table.Column<string>(type: "text", nullable: false),
                     ParticipantCount = table.Column<int>(type: "integer", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -194,14 +197,14 @@ namespace MercBooking.Api.Migrations
                 {
                     table.PrimaryKey("PK_WaitlistEntries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WaitlistEntries_Rooms_RoomIdId",
-                        column: x => x.RoomIdId,
+                        name: "FK_WaitlistEntries_Rooms_RoomId",
+                        column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WaitlistEntries_Users_UserIdId",
-                        column: x => x.UserIdId,
+                        name: "FK_WaitlistEntries_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -213,8 +216,9 @@ namespace MercBooking.Api.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    WaitlistEntryIdId = table.Column<int>(type: "integer", nullable: false),
-                    BookingIdId = table.Column<int>(type: "integer", nullable: false),
+                    WaitlistEntryId = table.Column<int>(type: "integer", nullable: false),
+                    BookingId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -222,78 +226,78 @@ namespace MercBooking.Api.Migrations
                 {
                     table.PrimaryKey("PK_WaitlistOffers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WaitlistOffers_Bookings_BookingIdId",
-                        column: x => x.BookingIdId,
+                        name: "FK_WaitlistOffers_Bookings_BookingId",
+                        column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WaitlistOffers_WaitlistEntries_WaitlistEntryIdId",
-                        column: x => x.WaitlistEntryIdId,
+                        name: "FK_WaitlistOffers_WaitlistEntries_WaitlistEntryId",
+                        column: x => x.WaitlistEntryId,
                         principalTable: "WaitlistEntries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingRequests_ReviewedByIdId",
+                name: "IX_BookingRequests_ReviewedById",
                 table: "BookingRequests",
-                column: "ReviewedByIdId");
+                column: "ReviewedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingRequests_roomIdId",
+                name: "IX_BookingRequests_RoomId",
                 table: "BookingRequests",
-                column: "roomIdId");
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingRequests_UserIdId",
+                name: "IX_BookingRequests_UserId",
                 table: "BookingRequests",
-                column: "UserIdId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_RoomIdId",
+                name: "IX_Bookings_RoomId",
                 table: "Bookings",
-                column: "RoomIdId");
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_UserIdId",
+                name: "IX_Bookings_UserId",
                 table: "Bookings",
-                column: "UserIdId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoomEquipment_EquipmentIdId",
+                name: "IX_RoomEquipment_EquipmentId",
                 table: "RoomEquipment",
-                column: "EquipmentIdId");
+                column: "EquipmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoomEquipment_RoomIdId",
+                name: "IX_RoomEquipment_RoomId",
                 table: "RoomEquipment",
-                column: "RoomIdId");
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rooms_CategoryIdId",
+                name: "IX_Rooms_CategoryId",
                 table: "Rooms",
-                column: "CategoryIdId");
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WaitlistEntries_RoomIdId",
+                name: "IX_WaitlistEntries_RoomId",
                 table: "WaitlistEntries",
-                column: "RoomIdId");
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WaitlistEntries_UserIdId",
+                name: "IX_WaitlistEntries_UserId",
                 table: "WaitlistEntries",
-                column: "UserIdId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WaitlistOffers_BookingIdId",
+                name: "IX_WaitlistOffers_BookingId",
                 table: "WaitlistOffers",
-                column: "BookingIdId");
+                column: "BookingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WaitlistOffers_WaitlistEntryIdId",
+                name: "IX_WaitlistOffers_WaitlistEntryId",
                 table: "WaitlistOffers",
-                column: "WaitlistEntryIdId");
+                column: "WaitlistEntryId");
         }
 
         /// <inheritdoc />
