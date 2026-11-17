@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merc Booking – Log ind</title>
+
+    <script src="../JavaScript/theme.js"></script>
+
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/account.css">
+    <link rel="stylesheet" href="../CSS/login.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+
+    <script src="../JavaScript/login.js" defer></script>
+</head>
+
+<body class="account-page">
+    <main class="account-card">
+        <a
+            class="account-back-arrow"
+            href="dashboard.html"
+            title="Tilbage"
+        >
+            <span aria-hidden="true">←</span>
+        </a>
+
+        <a href="dashboard.html" aria-label="Til forsiden">
+            <img class="account-logo" src="../../Utilities/Images/Merc_Booking.png" alt="Merc Booking">
+        </a>
+
+        <h1>Log ind</h1>
+        <p>Log ind på din Merc Booking-konto.</p>
+
+        <form id="loginForm" class="account-form" method="post">
+            <div class="form-field">
+                <label for="username">Brugernavn</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    autocomplete="username"
+                    placeholder="Dit brugernavn"
+                    autocapitalize="none"
+                    spellcheck="false"
+                    required
+                >
+            </div>
+
+            <div class="form-field">
+                <label for="password">Adgangskode</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="current-password"
+                    placeholder="Din adgangskode"
+                    required
+                >
+            </div>
+
+            <a class="login-forgot" href="passwordReset.html">Glemt adgangskode?</a>
+            <button class="button" type="submit">Log ind</button>
+            <p class="form-message" id="loginMessage" role="status"></p>
+        </form>
+        <div class="account-divider"><span>eller</span></div>
+        <a class="button button-secondary account-alternative" href="signup.html">Opret konto</a>
+    </main>
+</body>
+</html>

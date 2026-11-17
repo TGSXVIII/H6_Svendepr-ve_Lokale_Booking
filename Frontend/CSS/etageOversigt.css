@@ -1,0 +1,175 @@
+.floor-page {
+    min-height: 100vh;
+    margin: 0;
+    padding: 96px 24px 24px;
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(
+            rgb(0 0 0 / 20%),
+            rgb(0 0 0 / 20%)
+        ),
+        url("../../Utilities/Images/Mercantec_Skole.jpg")
+        center / cover fixed;
+}
+
+.floor-panel {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 24px;
+
+    width: 100%;
+    max-width: 1800px;
+    height: calc(100dvh - 120px);
+    min-height: 0;
+
+    margin: 0 auto;
+    padding: 24px;
+    box-sizing: border-box;
+
+    border-radius: 24px;
+    background: white;
+    color: #171717;
+}
+
+.floor-sidebar {
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.floor-logo {
+    display: block;
+    width: 190px;
+    max-width: 100%;
+    margin-bottom: 24px;
+}
+
+.floor-sidebar h1 {
+    margin: 0 0 12px;
+    font-size: 1.6rem;
+}
+
+.floor-sidebar p {
+    line-height: 1.5;
+}
+
+.floor-selector {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 24px 0;
+}
+
+.floor-selector button {
+    min-height: 44px;
+    padding: 10px;
+
+    border: 2px solid #211bb0;
+    border-radius: 999px;
+
+    background: white;
+    color: #211bb0;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.floor-selector button:hover {
+    background: #efeeff;
+}
+
+.floor-selector button[aria-pressed="true"] {
+    background: #211bb0;
+    color: white;
+}
+
+.floor-selector button:focus-visible {
+    outline: 3px solid #171717;
+    outline-offset: 3px;
+}
+
+.floor-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.floor-actions .button {
+    text-align: center;
+}
+
+.floor-document-link {
+    color: #211bb0;
+    text-underline-offset: 4px;
+    line-height: 1.5;
+}
+
+.floor-help {
+    color: #555;
+    font-size: 0.85rem;
+}
+
+.floor-viewer {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+
+    border: 1px solid #d5d5e3;
+    border-radius: 12px;
+    background: white;
+    box-sizing: border-box;
+}
+
+.floor-viewer a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: zoom-in;
+}
+
+.floor-viewer img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.floor-viewer a:focus-visible {
+    outline: 3px solid #211bb0;
+    outline-offset: -3px;
+}
+
+/* Mindre skærme: betjening over plantegningen. */
+@media (max-width: 900px) {
+    .floor-page {
+        padding: 96px 12px 24px;
+    }
+
+    .floor-panel {
+        grid-template-columns: 1fr;
+        height: auto;
+        padding: 20px;
+    }
+
+    .floor-sidebar {
+        overflow: visible;
+        padding-right: 0;
+    }
+
+    .floor-selector {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .floor-viewer,
+    .floor-viewer a {
+        height: auto;
+    }
+
+    .floor-viewer img {
+        height: auto;
+    }
+}
