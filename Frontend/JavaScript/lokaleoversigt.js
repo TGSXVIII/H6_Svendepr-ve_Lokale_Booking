@@ -205,7 +205,7 @@ function openBooking(room) {
     }
 
     if (!hasActiveLogin()) {
-        window.location.href = "auth.html";
+        window.location.href = "account.html";
         return;
     }
 
@@ -247,7 +247,7 @@ searchForm.addEventListener("submit", (event) => {
 
     if (!hasActiveLogin()) {
         bookingDialog.close();
-        window.location.href = "auth.html";
+        window.location.href = "account.html";
         return;
     }
 

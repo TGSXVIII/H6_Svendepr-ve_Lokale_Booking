@@ -6,30 +6,28 @@
 
     <title>Merc Booking – Log ind</title>
 
+    <script src="../JavaScript/theme.js"></script>
+
     <link rel="stylesheet" href="../CSS/shared.css">
-    <link rel="stylesheet" href="../CSS/auth.css">
+    <link rel="stylesheet" href="../CSS/account.css">
     <link rel="stylesheet" href="../CSS/login.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
 
     <script src="../JavaScript/login.js" defer></script>
 </head>
 
-<body class="auth-page">
-    <main class="auth-card">
+<body class="account-page">
+    <main class="account-card">
         <a
-            class="auth-back-arrow"
-            href="auth.html"
-            aria-label="Tilbage til login og oprettelse"
+            class="account-back-arrow"
+            href="dashboard.html"
             title="Tilbage"
         >
             <span aria-hidden="true">←</span>
         </a>
 
         <a href="dashboard.html" aria-label="Til forsiden">
-            <img
-                class="auth-logo"
-                src="../../Utilities/Images/Merc_Booking.png"
-                alt="Merc Booking"
-            >
+            <img class="account-logo" src="../../Utilities/Images/Merc_Booking.png" alt="Merc Booking">
         </a>
 
         <h1>Log ind</h1>
@@ -62,22 +60,12 @@
                 >
             </div>
 
-            <a class="login-forgot" href="passwordReset.html">
-                Glemt adgangskode?
-            </a>
-
+            <a class="login-forgot" href="passwordReset.html">Glemt adgangskode?</a>
             <button class="button" type="submit">Log ind</button>
-
             <p class="form-message" id="loginMessage" role="status"></p>
         </form>
-
-        <div class="auth-divider">
-            <span>eller</span>
-        </div>
-
-        <a class="button button-secondary account-alternative" href="signup.html">
-            Opret konto
-        </a>
+        <div class="account-divider"><span>eller</span></div>
+        <a class="button button-secondary account-alternative" href="signup.html">Opret konto</a>
     </main>
 </body>
 </html>

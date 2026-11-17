@@ -5,31 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merc Booking – Forside</title>
 
-    <link rel="stylesheet" href="../CSS/stylesheet.css">
+    <script src="../JavaScript/theme.js"></script>
+
     <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/stylesheet.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+
+    <script src="../JavaScript/session.js" defer></script>
     <script src="../JavaScript/script.js" defer></script>
 </head>
 <body>
-    <header class="site-header">
-        <button
-            class="menu-toggle"
-            id="menuToggle"
-            type="button"
-            aria-label="Åbn menu"
-            aria-controls="navigationMenu"
-            aria-expanded="false"
-        >
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
-
+    <div id="sharedNavigation"></div>
     <main class="home">
         <section class="welcome" aria-labelledby="welcomeTitle">
             <img
                 class="welcome-logo"
-                src="../../Utilities/Images/Merc_booking.png"
+                src="../../Utilities/Images/Merc_booking_logo.png"
                 alt="Merc Booking"
             >
 
@@ -47,22 +38,5 @@
             </a>
         </section>
     </main>
-
-    <dialog class="navigation-menu" id="navigationMenu" aria-label="Hovedmenu">
-        <button
-                class="menu-close"
-                id="menuClose"
-                type="button"
-                aria-label="Luk menu"
-        >
-            &times;
-        </button>
-
-        <nav aria-label="Navigation">
-            <a href="dashboard.html" aria-current="page">Forside</a>
-            <a href="lokaleoversigt.html">Lokaleoversigt</a>
-            <a href="auth.html">Log ind / Opret konto</a>
-        </nav>
-    </dialog>
 </body>
 </html>

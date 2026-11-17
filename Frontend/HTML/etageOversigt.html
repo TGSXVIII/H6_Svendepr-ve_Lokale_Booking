@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merc Booking – Etageoversigt</title>
+
+    <script src="../JavaScript/theme.js"></script>
+
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/etageOversigt.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+
+    <script src="../JavaScript/session.js" defer></script>
+    <script src="../JavaScript/script.js" defer></script>
+    <script src="../JavaScript/etageOversigt.js" defer></script>
+</head>
+
+<body class="floor-page">
+    <div id="sharedNavigation"></div>
+
+    <main class="floor-panel">
+        <aside class="floor-sidebar" aria-label="Vælg etage">
+            <a href="dashboard.html" aria-label="Til forsiden">
+                <img
+                    class="floor-logo"
+                    src="../../Utilities/Images/Merc_Booking.png"
+                    alt="Merc Booking"
+                >
+            </a>
+
+            <h1>Etageoversigt</h1>
+
+            <p>
+                Vælg et niveau for at se skolens lokaler
+                og deres placering.
+            </p>
+
+            <div
+                class="floor-selector"
+                role="group"
+                aria-label="Vælg niveau"
+            >
+                <button type="button" data-floor="1" aria-pressed="true">
+                    Niveau 1
+                </button>
+
+                <button type="button" data-floor="2" aria-pressed="false">
+                    Niveau 2
+                </button>
+
+                <button type="button" data-floor="3" aria-pressed="false">
+                    Niveau 3
+                </button>
+
+                <button type="button" data-floor="4" aria-pressed="false">
+                    Niveau 4
+                </button>
+
+                <button type="button" data-floor="5" aria-pressed="false">
+                    Niveau 5
+                </button>
+
+                <button type="button" data-floor="6" aria-pressed="false">
+                    Niveau 6
+                </button>
+            </div>
+
+            <div class="floor-actions">
+                <a class="button" href="lokaleoversigt.html">
+                    Find og book et lokale
+                </a>
+
+                <a
+                    class="floor-document-link"
+                    href="../../Utilities/Documents/Lokaleoversigt.pdf"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    Åbn hele oversigten som PDF
+                </a>
+            </div>
+
+            <p class="floor-help">
+                Klik på plantegningen for at åbne den
+                i fuld størrelse.
+            </p>
+
+            <p class="floor-help">
+                Plantegningen viser placeringer,
+                ikke aktuelle bookinger.
+            </p>
+        </aside>
+
+        <div id="floorViewer" class="floor-viewer"></div>
+    </main>
+</body>
+</html>
