@@ -5,3 +5,4 @@ global using MercBooking.Api.Data;
 global using MercBooking.Api.Models;
 global using Microsoft.AspNetCore.Identity;
 global using MercBooking.Utilities.DTO;
+global using Microsoft.AspNetCore.Authorization;

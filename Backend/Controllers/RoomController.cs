@@ -14,6 +14,7 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var rooms = await _context.Rooms
+            .Include(r => r.Category)
             .Select(r => new RoomGetDTO
             {
                 Id = r.Id,
@@ -22,7 +23,7 @@ public class RoomsController : ControllerBase
                 number = r.number,
                 Capacity = r.Capacity,
                 isActive = r.isActive,
-                CategoryId = r.Category
+                Category = r.Category
             })
             .ToListAsync();
 
@@ -35,6 +36,7 @@ public class RoomsController : ControllerBase
     {
         var room = await _context.Rooms
             .Where(r => r.Id == id)
+            .Include(r => r.Category)
             .Select(r => new RoomGetDTO
             {
                 Id = r.Id,
@@ -43,7 +45,7 @@ public class RoomsController : ControllerBase
                 number = r.number,
                 Capacity = r.Capacity,
                 isActive = r.isActive,
-                CategoryId = r.Category
+                Category = r.Category
             })
             .FirstOrDefaultAsync();
 
@@ -57,6 +59,12 @@ public class RoomsController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create(RoomCreateDTO roomDTO)
     {
+        
+        var category = await _context.Categories.FindAsync(roomDTO.CategoryId);
+
+        if (category == null)
+            return BadRequest("Category does not exist.");
+
         Rooms newRoom = new Rooms
         {
             Name = roomDTO.Name,
@@ -64,7 +72,8 @@ public class RoomsController : ControllerBase
             number = roomDTO.number,
             Capacity = roomDTO.Capacity,
             isActive = true,
-            Category = roomDTO.CategoryId
+            CategoryId = roomDTO.CategoryId,
+            Category = category
         };
 
         _context.Rooms.Add(newRoom);
@@ -78,7 +87,7 @@ public class RoomsController : ControllerBase
             number = newRoom.number,
             Capacity = newRoom.Capacity,
             isActive = newRoom.isActive,
-            CategoryId = newRoom.Category
+            Category = newRoom.Category
         };
 
         return CreatedAtAction(nameof(GetById), new { id = room.Id }, room);
@@ -98,7 +107,7 @@ public class RoomsController : ControllerBase
         room.number = roomDTO.number;
         room.Capacity = roomDTO.Capacity;
         room.isActive = roomDTO.isActive;
-        room.Category = roomDTO.CategoryId;
+        room.CategoryId = roomDTO.CategoryId;
 
         await _context.SaveChangesAsync();
 

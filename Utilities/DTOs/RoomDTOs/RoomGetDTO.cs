@@ -8,5 +8,5 @@ public class RoomGetDTO
     public string number { get; set; } = string.Empty;
     public int Capacity { get; set; }
     public bool isActive { get; set; } = true;
-    public Categories CategoryId { get; set; } = new Categories();
+    public Categories Category { get; set; }
 }
