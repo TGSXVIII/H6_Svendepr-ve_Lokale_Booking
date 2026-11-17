@@ -1,0 +1,292 @@
+:root {
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --theme-background: #14161e;
+    --theme-panel: #20232e;
+    --theme-field: #2a2e3c;
+    --theme-text: #f3f4fa;
+    --theme-muted: #bec3d4;
+    --theme-border: #50566c;
+    --theme-link: #c5c2ff;
+}
+
+/* Fælles temaknap i menuen */
+.navigation-menu .theme-toggle {
+    display: block;
+    width: 100%;
+    margin: 20px 0 0;
+    padding: 12px 16px;
+
+    border: 1px solid rgb(255 255 255 / 45%);
+    border-radius: 12px;
+
+    background: transparent;
+    color: white;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.navigation-menu .theme-toggle:hover {
+    background: rgb(255 255 255 / 12%);
+}
+
+/* Grundfarver */
+[data-theme="dark"] body {
+    background-color: var(--theme-background);
+    color: var(--theme-text);
+}
+
+/* Hvide kort og paneler */
+[data-theme="dark"] :is(
+    .welcome-card,
+    .auth-card,
+    .account-card,
+    .rooms-panel,
+    .floor-panel,
+    .profile-panel,
+    .booking-dialog
+) {
+    background: var(--theme-panel);
+    color: var(--theme-text);
+}
+
+/* Kort og felter inde i panelerne */
+[data-theme="dark"] :is(
+    .room-card,
+    .profile-summary,
+    .profile-fields > div
+) {
+    background: var(--theme-field);
+    color: var(--theme-text);
+    border-color: var(--theme-border);
+}
+
+/* Formularfelter */
+[data-theme="dark"] :is(
+    .account-form,
+    .room-filters,
+    .booking-dialog
+) :is(
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea
+) {
+    background: var(--theme-field);
+    color: var(--theme-text);
+    border-color: var(--theme-border);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: var(--theme-muted);
+}
+
+[data-theme="dark"] :is(input, select, textarea):disabled {
+    opacity: 0.65;
+}
+
+[data-theme="dark"] .equipment-filter {
+    border-color: var(--theme-border);
+}
+
+[data-theme="dark"] input[type="checkbox"] {
+    accent-color: #a6a0ff;
+}
+
+/* Sekundær tekst */
+[data-theme="dark"] :is(
+    .demo-notice,
+    .room-status,
+    .floor-help,
+    .profile-intro,
+    .profile-fields dt,
+    .auth-divider,
+    .account-divider
+) {
+    color: var(--theme-muted);
+}
+
+/* Links */
+[data-theme="dark"] :is(
+    .floor-document-link,
+    .profile-secondary-link,
+    .auth-card a:not(.button),
+    .account-card a:not(.button)
+) {
+    color: var(--theme-link);
+}
+
+/* Sekundære knapper og rollemærke */
+[data-theme="dark"] :is(
+    .button-secondary,
+    .profile-role,
+    .header-username,
+    .header-login
+) {
+    background: #353153;
+    color: #eeeaff;
+}
+
+/* Niveauknapper */
+[data-theme="dark"] .floor-selector button {
+    background: var(--theme-field);
+    color: var(--theme-text);
+    border-color: #9c94ff;
+}
+
+[data-theme="dark"] .floor-selector button:hover {
+    background: #37334f;
+}
+
+[data-theme="dark"] .floor-selector button[aria-pressed="true"] {
+    background: #211bb0;
+    color: white;
+}
+
+/* Divider på login/signup */
+[data-theme="dark"] :is(
+    .auth-divider,
+    .account-divider
+)::before,
+[data-theme="dark"] :is(
+    .auth-divider,
+    .account-divider
+)::after {
+    background: var(--theme-border);
+    border-color: var(--theme-border);
+}
+
+/* Adgangskodekrav */
+[data-theme="dark"] .password-requirements li {
+    color: var(--theme-muted);
+}
+
+[data-theme="dark"] .password-requirements li.is-valid {
+    color: #8ae6ad;
+}
+
+/* Sørg for tydeligt tastaturfokus */
+[data-theme="dark"] :is(a, button, input, select, textarea):focus-visible {
+    outline: 3px solid #c5c2ff;
+    outline-offset: 3px;
+}
+
+/* Logoerne har mørk tekst og får derfor en lys baggrund */
+[data-theme="dark"] :is(
+    .welcome-logo,
+    .auth-logo,
+    .account-logo,
+    .rooms-logo,
+    .floor-logo,
+    .profile-logo
+) {
+    background: transparent;
+    border-radius: 0;
+}
+
+/* Behold plantegningen lys og uændret */
+[data-theme="dark"] .floor-viewer {
+    background: white;
+    border-color: var(--theme-border);
+    color: #171717;
+}
+
+.menu-toggle,
+[data-theme="dark"] .menu-toggle {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.menu-toggle span,
+[data-theme="dark"] .menu-toggle span {
+    background: #211bb0;
+}
+
+html[data-theme="dark"] .profile-panel {
+    background: var(--theme-panel);
+    color: var(--theme-text);
+}
+
+/* Forsiden */
+html[data-theme="dark"] .home {
+    background-image:
+        linear-gradient(
+            rgb(20 22 30 / 75%),
+            rgb(20 22 30 / 75%)
+        ),
+        url("../../Utilities/Images/Mercantec_Skole.jpg");
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* Sider med skolebilledet på body */
+html[data-theme="dark"] body:is(
+    .account-page,
+    .auth-page,
+    .rooms-page,
+    .floor-page,
+    .profile-page
+) {
+    background-image:
+        linear-gradient(
+            rgb(20 22 30 / 75%),
+            rgb(20 22 30 / 75%)
+        ),
+        url("../../Utilities/Images/Mercantec_Skole.jpg");
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Navneboksen matcher infoboksens baggrund. */
+.header-username {
+    background: white;
+    color: #211bb0;
+}
+
+[data-theme="dark"] .header-username {
+    background: var(--theme-panel);
+    color: var(--theme-text);
+}
+
+/* Skolebilledet i light mode: et let blåt farvelag. */
+html[data-theme="light"] .home,
+html[data-theme="light"] body:is(
+    .account-page,
+    .auth-page,
+    .rooms-page,
+    .floor-page,
+    .profile-page
+) {
+    background-image:
+        linear-gradient(
+            135deg,
+            rgb(33 27 176 / 25%),
+            rgb(12 43 100 / 15%)
+        ),
+        url("../../Utilities/Images/Mercantec_Skole.jpg");
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+[data-theme="dark"] :is(
+    .welcome-logo,
+    .account-logo,
+    .rooms-logo,
+    .floor-logo,
+    .profile-logo
+) {
+    filter: brightness(0) invert(1);
+}

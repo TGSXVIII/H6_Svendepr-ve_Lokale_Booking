@@ -1,0 +1,10 @@
+.login-forgot {
+    align-self: flex-end;
+    color: var(--brand-blue);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.login-forgot:hover {
+    text-decoration: underline;
+}

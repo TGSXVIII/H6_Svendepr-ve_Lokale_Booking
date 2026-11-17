@@ -1,0 +1,103 @@
+/* Fælles indgang til login og oprettelse */
+.account-page {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 32px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--brand-blue);
+    background-image: url("../../Utilities/Images/Mercantec_Skole2.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.account-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 32px;
+    border-radius: 20px;
+    background-color: #fff;
+    text-align: center;
+    position: relative;
+    padding-top: 64px;
+}
+
+.account-logo {
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 32px;
+}
+
+.account-card h1 {
+    margin: 0 0 12px;
+    font-size: 28px;
+}
+
+.account-card p {
+    margin: 0 0 28px;
+    line-height: 1.5;
+}
+
+.account-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.account-back {
+    display: inline-block;
+    margin-top: 40px;
+    color: var(--brand-blue);
+}
+
+.account-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 16px;
+    color: #666;
+    font-size: 14px;
+}
+
+.account-divider::before,
+.account-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.account-forgot-password {
+    display: inline-block;
+    color: var(--brand-blue);
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.account-forgot-password:hover {
+    text-decoration: underline;
+}
+
+.account-back-arrow {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+
+    color: var(--brand-blue);
+    font-size: 28px;
+    text-decoration: none;
+}

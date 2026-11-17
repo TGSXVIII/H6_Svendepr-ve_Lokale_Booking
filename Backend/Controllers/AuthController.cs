@@ -47,7 +47,8 @@ public class AuthController : ControllerBase
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.role.ToString())
         };
 
         var key = new SymmetricSecurityKey(
@@ -78,6 +79,7 @@ public class AuthController : ControllerBase
             {
                 user.Id,
                 user.Username,
+                role = user.role.ToString()
             }
         });
     }

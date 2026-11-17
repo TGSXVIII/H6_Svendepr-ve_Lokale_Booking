@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merc Booking – Min profil</title>
+
+    <script src="../JavaScript/theme.js"></script>
+
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/minProfil.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+
+    <script src="../JavaScript/session.js" defer></script>
+    <script src="../JavaScript/script.js" defer></script>
+    <script src="../JavaScript/minProfil.js" defer></script>
+</head>
+
+<body class="profile-page">
+    <div id="sharedNavigation"></div>
+
+    <main class="profile-panel">
+        <a href="dashboard.html" aria-label="Til forsiden">
+            <img
+                class="profile-logo"
+                src="../../Utilities/Images/Merc_Booking.png"
+                alt="Merc Booking"
+            >
+        </a>
+
+        <h1>Min profil</h1>
+        <p class="profile-intro">
+            Her kan du se dine brugeroplysninger.
+        </p>
+
+        <p id="profileMessage" role="status">Henter din profil...</p>
+
+        <section id="profileContent" hidden aria-labelledby="profileName">
+            <div class="profile-summary">
+                <div
+                    id="profileAvatar"
+                    class="profile-avatar"
+                    aria-hidden="true"
+                ></div>
+
+                <div>
+                    <h2 id="profileName"></h2>
+                    <span id="profileRole" class="profile-role"></span>
+                </div>
+            </div>
+
+            <section class="profile-details" aria-labelledby="detailsTitle">
+                <h2 id="detailsTitle">Mine oplysninger</h2>
+
+                <dl class="profile-fields">
+                    <div>
+                        <dt>Brugernavn</dt>
+                        <dd id="profileUsername"></dd>
+                    </div>
+
+                    <div>
+                        <dt>E-mail</dt>
+                        <dd id="profileEmail"></dd>
+                    </div>
+
+                    <div>
+                        <dt>Rolle</dt>
+                        <dd id="profileRoleDetail"></dd>
+                    </div>
+                </dl>
+            </section>
+
+            <div class="profile-actions">
+                <a class="button" href="mineBookinger.html">
+                    Mine bookinger
+                </a>
+
+                <a class="profile-secondary-link" href="lokaleoversigt.html">
+                    Find et lokale
+                </a>
+            </div>
+        </section>
+
+        <button
+            id="retryProfile"
+            class="button"
+            type="button"
+            hidden
+        >
+            Prøv igen
+        </button>
+    </main>
+</body>
+</html>

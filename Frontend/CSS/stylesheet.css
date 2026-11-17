@@ -52,6 +52,24 @@
     line-height: 1.5;
 }
 
+.home .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.home .welcome-logo {
+    display: block;
+    height: auto;
+    margin: 0;
+}
+
+.home .welcome-card {
+    margin: 0;
+}
+
 /* Tilpasning til mindre skærme */
 @media (max-width: 600px) {
     .welcome-logo {

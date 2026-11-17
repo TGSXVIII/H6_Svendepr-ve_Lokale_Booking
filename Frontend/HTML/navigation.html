@@ -1,0 +1,54 @@
+<header class="site-header">
+    <div class="header-actions">
+        <div id="guestActions" hidden>
+            <a class="header-login" href="login.html">Log ind</a>
+            <a class="header-signup" href="signup.html">Opret konto</a>
+        </div>
+
+        <span id="headerUsername" class="header-username" hidden></span>
+
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Åbn menu" aria-controls="navigationMenu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<dialog class="navigation-menu" id="navigationMenu" aria-label="Hovedmenu">
+    <button class="menu-close" id="menuClose" type="button" aria-label="Luk menu">&times;</button>
+
+    <nav aria-label="Navigation">
+
+        <!-- Menu items for all users -->
+        <a href="dashboard.html">Forside</a>
+        <a href="lokaleoversigt.html">Lokaleoversigt</a>
+        <a href="etageOversigt.html">Etage oversigt</a>   
+        
+        <!-- Menu divider -->
+        <hr class="menu-divider" data-roles="Student Teacher Admin" hidden>
+
+        <!-- Menu items for authenticated users -->
+        <a href="minProfil.html" data-roles="Student Teacher Admin" hidden> Min profil</a>
+        <a href="mineBookinger.html" data-roles="Student Teacher Admin" hidden> Mine bookinger</a>
+        <a href="mineAnmodninger.html" data-roles="Student" hidden>Mine anmodninger</a>
+        <a href="godkendelser.html" data-roles="Teacher" hidden>Godkendelser</a>
+        <a href="venteliste.html" data-roles="Teacher" hidden>Venteliste</a>
+        <a href="administration.html" data-roles="Admin" hidden>Administration</a>
+    </nav>
+
+    <button
+        id="themeToggle"
+        class="theme-toggle"
+        type="button"
+        aria-pressed="false"
+    >
+        Mørk tilstand
+    </button>
+
+    <p id="navigationStatus" class="navigation-status" role="status"></p>
+
+    <button id="logoutButton" class="menu-logout" type="button" hidden>
+        Log ud
+    </button>
+</dialog>

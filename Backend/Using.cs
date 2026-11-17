@@ -1,7 +1,11 @@
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore.Design;
-global using Microsoft.AspNetCore.Mvc;
-global using MercBooking.Api.Data;
-global using MercBooking.Api.Models;
 global using Microsoft.AspNetCore.Identity;
 global using MercBooking.Utilities.DTO;
+global using Microsoft.AspNetCore.Mvc;
+global using MercBooking.Api.Models;
+global using System.Security.Claims;
+global using MercBooking.Api.Data;
+global using System.Text;

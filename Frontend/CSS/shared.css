@@ -178,7 +178,7 @@ button:focus-visible {
     cursor: pointer;
 }
 
-.auth-card .form-message {
+.account-card .form-message {
     margin: 0;
     font-size: 14px;
     line-height: 1.5;
@@ -188,7 +188,7 @@ button:focus-visible {
     display: none;
 }
 
-.auth-card .account-switch {
+.account-card .account-switch {
     margin: 24px 0 0;
     font-size: 15px;
     line-height: 1.5;
@@ -201,4 +201,120 @@ button:focus-visible {
 
 .account-alternative {
     width: 100%;
+}
+
+/* Sørger for, at skjulte menupunkter forbliver skjulte. */
+[hidden] {
+    display: none !important;
+}
+
+.site-header {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+}
+
+.header-actions,
+#guestActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Burger-knappen placeres nu af headerens flex-layout. */
+.site-header .menu-toggle {
+    position: static;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.header-login,
+.header-signup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.header-login {
+    background: white;
+    color: #211bb0;
+}
+
+.header-signup {
+    background: #211bb0;
+    color: white;
+}
+
+.header-username {
+    max-width: 180px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: white;
+    color: #211bb0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navigation-status {
+    color: white;
+    padding: 0 16px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.navigation-status:empty {
+    display: none;
+}
+
+.menu-logout {
+    display: block;
+    margin: 24px auto;
+    padding: 12px 24px;
+    border: 1px solid white;
+    border-radius: 999px;
+    background: transparent;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+.menu-logout:hover {
+    background: rgb(255 255 255 / 15%);
+}
+
+.navigation-menu .menu-divider {
+    width: 100%;
+    height: 0;
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid rgb(255 255 255 / 35%);
+}
+
+@media (max-width: 600px) {
+    .site-header {
+        top: 12px;
+        right: 12px;
+    }
+
+    .header-actions,
+    #guestActions {
+        gap: 8px;
+    }
+
+    .header-login,
+    .header-signup {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .header-username {
+        max-width: 120px;
+    }
 }
