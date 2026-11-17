@@ -12,6 +12,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // GET: api/WaitlistEntries
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -37,6 +38,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // GET: api/WaitlistEntries/5
+    [Authorize]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -66,6 +68,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // POST: api/WaitlistEntries
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> Create(WaitlistEntryCreateDTO dto)
     {
@@ -139,6 +142,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // DELETE: api/WaitlistEntries/delete/5
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

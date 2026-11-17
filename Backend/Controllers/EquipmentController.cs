@@ -12,6 +12,7 @@ public class EquipmentController : ControllerBase
     }
 
     // GET: api/Equipment
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -27,6 +28,7 @@ public class EquipmentController : ControllerBase
     }
 
     // GET: api/Equipment/5
+    [Authorize]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -46,6 +48,7 @@ public class EquipmentController : ControllerBase
     }
 
     // POST: api/Equipment
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> Create(EquipmentCreateDTO dto)
     {
@@ -71,6 +74,7 @@ public class EquipmentController : ControllerBase
     }
 
     // PUT: api/Equipment/5
+    [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, EquipmentUpdateDTO dto)
     {
@@ -87,6 +91,7 @@ public class EquipmentController : ControllerBase
     }
 
     // DELETE: api/Equipment/5
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

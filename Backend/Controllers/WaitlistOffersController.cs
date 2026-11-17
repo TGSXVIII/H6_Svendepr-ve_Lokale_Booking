@@ -11,6 +11,7 @@ public class WaitlistOffersController : ControllerBase
         _context = context;
     }
 
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -29,6 +30,7 @@ public class WaitlistOffersController : ControllerBase
         return Ok(offers);
     }
 
+    [Authorize]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -51,6 +53,7 @@ public class WaitlistOffersController : ControllerBase
         return Ok(offer);
     }
 
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> Create(WaitlistOfferCreateDTO dto)
     {
@@ -92,7 +95,8 @@ public class WaitlistOffersController : ControllerBase
 
         return CreatedAtAction(nameof(GetById), new { id = newOffer.Id }, result);
     }
-
+    
+    [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, WaitlistOfferUpdateDTO dto)
     {
@@ -123,6 +127,7 @@ public class WaitlistOffersController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

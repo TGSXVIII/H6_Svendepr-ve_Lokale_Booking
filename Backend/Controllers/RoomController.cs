@@ -10,6 +10,7 @@ public class RoomsController : ControllerBase
     }
 
     // GET: api/rooms
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -31,6 +32,7 @@ public class RoomsController : ControllerBase
     }
 
     // GET: api/rooms/5
+    [Authorize]
     [HttpGet("GetRoom/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -56,6 +58,7 @@ public class RoomsController : ControllerBase
     }
 
     // POST: api/rooms
+    [Authorize]
     [HttpPost("Create")]
     public async Task<IActionResult> Create(RoomCreateDTO roomDTO)
     {
@@ -94,6 +97,7 @@ public class RoomsController : ControllerBase
     }
 
     // PUT: api/rooms/5
+    [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, RoomUpdateDTO roomDTO)
     {
@@ -115,6 +119,7 @@ public class RoomsController : ControllerBase
     }
 
     // DELETE: api/rooms/5
+    [Authorize]
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

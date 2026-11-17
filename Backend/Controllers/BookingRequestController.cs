@@ -12,6 +12,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // GET: api/BookingRequests
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -41,6 +42,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // GET: api/BookingRequests/5
+    [Authorize]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -74,6 +76,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // POST: api/BookingRequests
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> Create(BookingRequestCreateDTO dto)
     {
@@ -114,6 +117,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // PUT: api/BookingRequests/update/5
+    [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, BookingRequestUpdateDTO dto)
     {
@@ -136,6 +140,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // DELETE: api/BookingRequests/delete/5
+    [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

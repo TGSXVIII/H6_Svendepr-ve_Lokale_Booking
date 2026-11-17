@@ -12,6 +12,7 @@ public class UsersController : ControllerBase
     }
 
     // GET: api/users
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -20,6 +21,7 @@ public class UsersController : ControllerBase
     }
 
     // GET: api/users/5
+    [Authorize]
     [HttpGet("GetUser/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -62,6 +64,7 @@ public class UsersController : ControllerBase
     
 
     // PUT: api/users/5
+    [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, Users updatedUser)
     {
@@ -79,6 +82,7 @@ public class UsersController : ControllerBase
     }
 
     // PUT: api/users/changepassword/5
+    [Authorize]
     [HttpPut("changepassword/{id}")]
     public async Task<IActionResult> ChangePassword(int id, Users updatedUser)
     {
@@ -95,6 +99,7 @@ public class UsersController : ControllerBase
     }
 
     // DELETE: api/users/5
+    [Authorize]
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
