@@ -173,10 +173,10 @@ public class BookingsController : ControllerBase
         return NoContent();
     }
  
-    // GET: api/bookings/mine
+    // GET: api/bookings/CurrentUserBookings
     [Authorize]
     [HttpGet("CurrentUserBookings")]
-    public async Task<IActionResult> GetMine()
+    public async Task<IActionResult> CurrentUserBookings()
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
     
