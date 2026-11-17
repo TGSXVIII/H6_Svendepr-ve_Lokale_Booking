@@ -4,11 +4,9 @@ public class WaitlistEntryGetDTO
 {
     public int Id { get; set; }
 
-    public int UserId { get; set; }
-    public string Username { get; set; } = string.Empty;
+    public UserGetDTO User { get; set; } = new UserGetDTO();
 
-    public int RoomId { get; set; }
-    public string RoomName { get; set; } = string.Empty;
+    public RoomGetDTO Room { get; set; } = new RoomGetDTO();
 
     public DateTime RequestedStart { get; set; }
     public DateTime RequestedEnd { get; set; }

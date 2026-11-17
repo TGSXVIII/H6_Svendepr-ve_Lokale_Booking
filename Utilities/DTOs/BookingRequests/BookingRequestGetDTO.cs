@@ -2,16 +2,11 @@ namespace MercBooking.Utilities.DTO;
 
 public class BookingRequestGetDTO
 {
-    public int Id { get; set; }
+    public UserGetDTO User { get; set; } = new UserGetDTO();
 
-    public int UserId { get; set; }
-    public string Username { get; set; } = string.Empty;
+    public RoomGetDTO Room { get; set; } = new RoomGetDTO();
 
-    public int RoomId { get; set; }
-    public string RoomName { get; set; } = string.Empty;
-
-    public int? ReviewedById { get; set; }
-    public string? ReviewedByUsername { get; set; }
+    public UserGetDTO? ReviewedBy { get; set; }
 
     public DateTime BookedFrom { get; set; }
     public DateTime BookedTo { get; set; }

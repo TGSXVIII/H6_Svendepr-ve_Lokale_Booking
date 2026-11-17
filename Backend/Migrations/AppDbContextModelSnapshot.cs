@@ -69,7 +69,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BookingRequests", (string)null);
+                    b.ToTable("BookingRequests");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.Bookings", b =>
@@ -80,6 +80,12 @@ namespace MercBooking.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("BookingEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("BookingStart")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("text");
@@ -89,12 +95,6 @@ namespace MercBooking.Api.Migrations
 
                     b.Property<int>("ParticipantCount")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("RequestedEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("RequestedStart")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("integer");
@@ -114,7 +114,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings", (string)null);
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.Categories", b =>
@@ -131,7 +131,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.Equipment", b =>
@@ -148,7 +148,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Equipment", (string)null);
+                    b.ToTable("Equipment");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.RoomEquipment", b =>
@@ -174,7 +174,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomEquipment", (string)null);
+                    b.ToTable("RoomEquipment");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.Rooms", b =>
@@ -210,7 +210,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.Users", b =>
@@ -238,7 +238,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.WaitlistEntries", b =>
@@ -283,7 +283,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WaitlistEntries", (string)null);
+                    b.ToTable("WaitlistEntries");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.WaitlistOffers", b =>
@@ -315,7 +315,7 @@ namespace MercBooking.Api.Migrations
 
                     b.HasIndex("WaitlistEntryId");
 
-                    b.ToTable("WaitlistOffers", (string)null);
+                    b.ToTable("WaitlistOffers");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.BookingRequests", b =>
