@@ -17,16 +17,41 @@ public class BookingRequestsController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var requests = await _context.BookingRequests
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .Include(r => r.Room.Category)
+            .Include(r => r.ReviewedBy)
             .Select(r => new BookingRequestGetDTO
             {
-                Id = r.Id,
-                UserId = r.UserId,
-                Username = r.User.Username,
-                RoomId = r.RoomId,
-                RoomName = r.Room.Name,
-                ReviewedById = r.ReviewedById,
-                ReviewedByUsername = r.ReviewedBy != null
-                    ? r.ReviewedBy.Username
+                User = new UserGetDTO
+                {
+                    Id = r.User.Id,
+                    Username = r.User.Username,
+                    Email = r.User.Email,
+                    Role = r.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = r.Room.Id,
+                    Name = r.Room.Name,
+                    Capacity = r.Room.Capacity,
+                    floor = r.Room.floor,
+                    number = r.Room.number,
+                    isActive = r.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = r.Room.Category.Id,
+                        Name = r.Room.Category.Name
+                    }
+                },
+                ReviewedBy = r.ReviewedBy != null
+                    ? new UserGetDTO
+                    {
+                        Id = r.ReviewedBy.Id,
+                        Username = r.ReviewedBy.Username,
+                        Email = r.ReviewedBy.Email,
+                        Role = r.ReviewedBy.role.ToString()
+                    }
                     : null,
                 BookedFrom = r.BookedFrom,
                 BookedTo = r.BookedTo,
@@ -48,16 +73,41 @@ public class BookingRequestsController : ControllerBase
     {
         var request = await _context.BookingRequests
             .Where(r => r.Id == id)
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .Include(r => r.Room.Category)
+            .Include(r => r.ReviewedBy)
             .Select(r => new BookingRequestGetDTO
             {
-                Id = r.Id,
-                UserId = r.UserId,
-                Username = r.User.Username,
-                RoomId = r.RoomId,
-                RoomName = r.Room.Name,
-                ReviewedById = r.ReviewedById,
-                ReviewedByUsername = r.ReviewedBy != null
-                    ? r.ReviewedBy.Username
+                User = new UserGetDTO
+                {
+                    Id = r.User.Id,
+                    Username = r.User.Username,
+                    Email = r.User.Email,
+                    Role = r.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = r.Room.Id,
+                    Name = r.Room.Name,
+                    Capacity = r.Room.Capacity,
+                    floor = r.Room.floor,
+                    number = r.Room.number,
+                    isActive = r.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = r.Room.Category.Id,
+                        Name = r.Room.Category.Name
+                    }
+                },
+                ReviewedBy = r.ReviewedBy != null
+                    ? new UserGetDTO
+                    {
+                        Id = r.ReviewedBy.Id,
+                        Username = r.ReviewedBy.Username,
+                        Email = r.ReviewedBy.Email,
+                        Role = r.ReviewedBy.role.ToString()
+                    }
                     : null,
                 BookedFrom = r.BookedFrom,
                 BookedTo = r.BookedTo,
@@ -80,7 +130,13 @@ public class BookingRequestsController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> Create(BookingRequestCreateDTO dto)
     {
-        var user = await _context.Users.FindAsync(dto.UserId);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var user = await _context.Users.FindAsync(userId);
         if (user == null)
         {
             return BadRequest("User does not exist.");
@@ -93,7 +149,7 @@ public class BookingRequestsController : ControllerBase
 
         var newRequest = new BookingRequests
         {
-            UserId = dto.UserId,
+            UserId = userId,
             User = user,
             RoomId = dto.RoomId,
             Room = room,

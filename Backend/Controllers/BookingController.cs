@@ -20,12 +20,41 @@ public class BookingsController : ControllerBase
             .Select(b => new BookingGetDTO
             {
                 Id = b.Id,
-                UserId = b.UserId,
-                Username = b.User.Username,
-                RoomId = b.RoomId,
-                RoomName = b.Room.Name,
-                RequestedStart = b.RequestedStart,
-                RequestedEnd = b.RequestedEnd,
+                User = new UserGetDTO
+                {
+                    Id = b.User.Id,
+                    Username = b.User.Username,
+                    Email = b.User.Email,
+                    Role = b.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = b.Room.Id,
+                    Name = b.Room.Name,
+                    Capacity = b.Room.Capacity,
+                    floor = b.Room.floor,
+                    number = b.Room.number,
+                    isActive = b.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = b.Room.Category.Id,
+                        Name = b.Room.Category.Name
+                    },
+                    RoomEquipment = b.Room.RoomEquipment
+                    .Select(re => new RoomEquipmentWithoutRoomGetDTO
+                    {
+                        Id = re.Id,
+                        Equipment = new EquipmentGetDTO
+                        {
+                            Id = re.Equipment.Id,
+                            Name = re.Equipment.Name
+                        },
+                        Quantity = re.Quantity
+                    })
+                    .ToList()
+                },
+                BookingStart = b.BookingStart,
+                BookingEnd = b.BookingEnd,
                 Comment = b.Comment,
                 Status = b.Status,
                 ParticipantCount = b.ParticipantCount,
@@ -44,15 +73,35 @@ public class BookingsController : ControllerBase
     {
         var booking = await _context.Bookings
             .Where(b => b.Id == id)
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .Include(r => r.Room.Category)
             .Select(b => new BookingGetDTO
             {
                 Id = b.Id,
-                UserId = b.UserId,
-                Username = b.User.Username,
-                RoomId = b.RoomId,
-                RoomName = b.Room.Name,
-                RequestedStart = b.RequestedStart,
-                RequestedEnd = b.RequestedEnd,
+                User = new UserGetDTO
+                {
+                    Id = b.User.Id,
+                    Username = b.User.Username,
+                    Email = b.User.Email,
+                    Role = b.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = b.Room.Id,
+                    Name = b.Room.Name,
+                    Capacity = b.Room.Capacity,
+                    floor = b.Room.floor,
+                    number = b.Room.number,
+                    isActive = b.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = b.Room.Category.Id,
+                        Name = b.Room.Category.Name
+                    }
+                },
+                BookingStart = b.BookingStart,
+                BookingEnd = b.BookingEnd,
                 Comment = b.Comment,
                 Status = b.Status,
                 ParticipantCount = b.ParticipantCount,
@@ -69,7 +118,7 @@ public class BookingsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var userId))
             return Unauthorized();
  
-        if (booking.UserId != userId &&
+        if (booking.User.Id != userId &&
             !User.IsInRole("Teacher") &&
             !User.IsInRole("Admin"))
         {
@@ -107,8 +156,8 @@ public class BookingsController : ControllerBase
             User = user,
             RoomId = dto.RoomId,
             Room = room,
-            RequestedStart = dto.RequestedStart,
-            RequestedEnd = dto.RequestedEnd,
+            BookingStart = dto.BookingStart,
+            BookingEnd = dto.BookingEnd,
             Comment = dto.Comment,
             Status = BookingStatus.Pending,
             ParticipantCount = dto.ParticipantCount,
@@ -137,8 +186,8 @@ public class BookingsController : ControllerBase
             return NotFound();
  
         booking.RoomId = dto.RoomId;
-        booking.RequestedStart = dto.RequestedStart;
-        booking.RequestedEnd = dto.RequestedEnd;
+        booking.BookingStart = dto.BookingStart;
+        booking.BookingEnd = dto.BookingEnd;
         booking.Comment = dto.Comment;
         booking.Status = dto.Status;
         booking.ParticipantCount = dto.ParticipantCount;
@@ -164,7 +213,7 @@ public class BookingsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var userId))
             return Unauthorized();
  
-        if (booking.UserId != userId && !User.IsInRole("Admin"))
+        if (booking.User.Id != userId && !User.IsInRole("Admin"))
             return Forbid();
  
         _context.Bookings.Remove(booking);
@@ -186,16 +235,35 @@ public class BookingsController : ControllerBase
         var bookings = await _context.Bookings
             .AsNoTracking()
             .Where(b => b.UserId == userId)
-            .OrderByDescending(b => b.RequestedStart)
+            .Include(b => b.User)
+            .Include(b => b.Room)
+            .OrderByDescending(b => b.BookingStart)
             .Select(b => new BookingGetDTO
             {
                 Id = b.Id,
-                UserId = b.UserId,
-                Username = b.User.Username,
-                RoomId = b.RoomId,
-                RoomName = b.Room.Name,
-                RequestedStart = b.RequestedStart,
-                RequestedEnd = b.RequestedEnd,
+                User = new UserGetDTO
+                {
+                    Id = b.User.Id,
+                    Username = b.User.Username,
+                    Email = b.User.Email,
+                    Role = b.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = b.Room.Id,
+                    Name = b.Room.Name,
+                    Capacity = b.Room.Capacity,
+                    floor = b.Room.floor,
+                    number = b.Room.number,
+                    isActive = b.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = b.Room.Category.Id,
+                        Name = b.Room.Category.Name
+                    }
+                },
+                BookingStart = b.BookingStart,
+                BookingEnd = b.BookingEnd,
                 Comment = b.Comment,
                 Status = b.Status,
                 ParticipantCount = b.ParticipantCount,

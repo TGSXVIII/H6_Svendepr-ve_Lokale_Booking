@@ -17,13 +17,33 @@ public class WaitlistEntriesController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var entries = await _context.WaitlistEntries
+            .Include(w => w.User)
+            .Include(w => w.Room)
+            .Include(w => w.Room.Category)
             .Select(w => new WaitlistEntryGetDTO
             {
                 Id = w.Id,
-                UserId = w.UserId,
-                Username = w.User.Username,
-                RoomId = w.RoomId,
-                RoomName = w.Room.Name,
+                User = new UserGetDTO
+                {
+                    Id = w.User.Id,
+                    Username = w.User.Username,
+                    Email = w.User.Email,
+                    Role = w.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = w.Room.Id,
+                    Name = w.Room.Name,
+                    Capacity = w.Room.Capacity,
+                    floor = w.Room.floor,
+                    number = w.Room.number,
+                    isActive = w.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = w.Room.Category.Id,
+                        Name = w.Room.Category.Name
+                    }
+                },
                 RequestedStart = w.RequestedStart,
                 RequestedEnd = w.RequestedEnd,
                 Comment = w.Comment,
@@ -44,13 +64,34 @@ public class WaitlistEntriesController : ControllerBase
     {
         var entry = await _context.WaitlistEntries
             .Where(w => w.Id == id)
+            .Include(w => w.User)
+            .Include(w => w.Room)
+            .Include(w => w.Room.Category)
             .Select(w => new WaitlistEntryGetDTO
             {
                 Id = w.Id,
-                UserId = w.UserId,
-                Username = w.User.Username,
-                RoomId = w.RoomId,
-                RoomName = w.Room.Name,
+                User = new UserGetDTO
+                {
+                    Id = w.User.Id,
+                    Username = w.User.Username,
+                    Email = w.User.Email,
+                    Role = w.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = w.Room.Id,
+                    Name = w.Room.Name,
+                    Capacity = w.Room.Capacity,
+                    floor = w.Room.floor,
+                    number = w.Room.number,
+                    isActive = w.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = w.Room.Category.Id,
+                        Name = w.Room.Category.Name
+                    }
+                },
+
                 RequestedStart = w.RequestedStart,
                 RequestedEnd = w.RequestedEnd,
                 Comment = w.Comment,
@@ -72,7 +113,12 @@ public class WaitlistEntriesController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> Create(WaitlistEntryCreateDTO dto)
     {
-        var user = await _context.Users.FindAsync(dto.UserId);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+        var user = await _context.Users.FindAsync(userId);
         if (user == null)
             return BadRequest("User does not exist.");
 
@@ -82,7 +128,7 @@ public class WaitlistEntriesController : ControllerBase
 
         var newEntry = new WaitlistEntries
         {
-            UserId = dto.UserId,
+            UserId = userId,
             User = user,
             RoomId = dto.RoomId,
             Room = room,

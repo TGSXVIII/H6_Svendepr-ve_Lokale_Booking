@@ -16,11 +16,31 @@ public class RoomEquipmentController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var roomEquipment = await _context.RoomEquipment
+            .Include(re => re.Room)
+                .ThenInclude(r => r.Category)
+            .Include(re => re.Equipment)
             .Select(re => new RoomEquipmentGetDTO
             {
                 Id = re.Id,
-                RoomId = re.RoomId,
-                EquipmentId = re.EquipmentId,
+                Room = new RoomGetDTO
+                {
+                    Id = re.Room.Id,
+                    Name = re.Room.Name,
+                    floor = re.Room.floor,
+                    number = re.Room.number,
+                    Capacity = re.Room.Capacity,
+                    isActive = re.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = re.Room.Category.Id,
+                        Name = re.Room.Category.Name
+                    }
+                },
+                Equipment = new EquipmentGetDTO
+                {
+                    Id = re.Equipment.Id,
+                    Name = re.Equipment.Name,
+                },
                 Quantity = re.Quantity
             })
             .ToListAsync();
@@ -33,11 +53,31 @@ public class RoomEquipmentController : ControllerBase
     {
         var roomEquipment = await _context.RoomEquipment
             .Where(re => re.Id == id)
+            .Include(re => re.Room)
+                .ThenInclude(r => r.Category)
+            .Include(re => re.Equipment)
             .Select(re => new RoomEquipmentGetDTO
             {
                 Id = re.Id,
-                RoomId = re.RoomId,
-                EquipmentId = re.EquipmentId,
+                Room = new RoomGetDTO
+                {
+                    Id = re.Room.Id,
+                    Name = re.Room.Name,
+                    floor = re.Room.floor,
+                    number = re.Room.number,
+                    Capacity = re.Room.Capacity,
+                    isActive = re.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = re.Room.Category.Id,
+                        Name = re.Room.Category.Name
+                    }
+                },
+                Equipment = new EquipmentGetDTO
+                {
+                    Id = re.Equipment.Id,
+                    Name = re.Equipment.Name,
+                },
                 Quantity = re.Quantity
             })
             .FirstOrDefaultAsync();
@@ -79,8 +119,25 @@ public class RoomEquipmentController : ControllerBase
         var result = new RoomEquipmentGetDTO
         {
             Id = newRoomEquipment.Id,
-            RoomId = newRoomEquipment.RoomId,
-            EquipmentId = newRoomEquipment.EquipmentId,
+            Room = new RoomGetDTO
+            {
+                Id = room.Id,
+                Name = room.Name,
+                floor = room.floor,
+                number = room.number,
+                Capacity = room.Capacity,
+                isActive = room.isActive,
+                Category = new CategoryGetDTO
+                {
+                    Id = room.Category.Id,
+                    Name = room.Category.Name
+                }
+            },
+            Equipment = new EquipmentGetDTO
+            {
+                Id = equipment.Id,
+                Name = equipment.Name
+            },
             Quantity = newRoomEquipment.Quantity
         };
 

@@ -8,5 +8,6 @@ public class RoomGetDTO
     public string number { get; set; } = string.Empty;
     public int Capacity { get; set; }
     public bool isActive { get; set; } = true;
-    public Categories Category { get; set; }
+    public CategoryGetDTO Category { get; set; } = new CategoryGetDTO();
+    public ICollection<RoomEquipmentWithoutRoomGetDTO> RoomEquipment { get; set; } = new List<RoomEquipmentWithoutRoomGetDTO>();
 }
