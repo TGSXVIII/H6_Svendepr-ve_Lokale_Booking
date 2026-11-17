@@ -1,18 +1,18 @@
 namespace MercBooking.Api.Controllers;
-
+ 
 [ApiController]
 [Route("api/[controller]")]
 public class BookingsController : ControllerBase
 {
     private readonly AppDbContext _context;
-
+ 
     public BookingsController(AppDbContext context)
     {
         _context = context;
     }
-
+ 
     // GET: api/Bookings
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -33,10 +33,10 @@ public class BookingsController : ControllerBase
                 UpdatedAt = b.UpdatedAt
             })
             .ToListAsync();
-
+ 
         return Ok(bookings);
     }
-
+ 
     // GET: api/Bookings/5
     [Authorize]
     [HttpGet("getById/{id}")]
@@ -60,33 +60,50 @@ public class BookingsController : ControllerBase
                 UpdatedAt = b.UpdatedAt
             })
             .FirstOrDefaultAsync();
-
+ 
         if (booking == null)
             return NotFound();
-
+ 
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+ 
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+ 
+        if (booking.UserId != userId &&
+            !User.IsInRole("Teacher") &&
+            !User.IsInRole("Admin"))
+        {
+            return Forbid();
+        }
+ 
         return Ok(booking);
     }
-
+ 
     // POST: api/Bookings
     [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> Create(BookingCreateDTO dto)
     {
-        var user = await _context.Users.FindAsync(dto.UserId);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+ 
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+ 
+        var user = await _context.Users.FindAsync(userId);
+ 
         if (user == null)
         {
             return BadRequest("User does not exist.");
         }
-
+ 
         var room = await _context.Rooms.FindAsync(dto.RoomId);
         if (room == null)
         {
             return BadRequest("Room does not exist.");
         }
-
+ 
         var newBooking = new Bookings
         {
-            UserId = dto.UserId,
             User = user,
             RoomId = dto.RoomId,
             Room = room,
@@ -98,27 +115,27 @@ public class BookingsController : ControllerBase
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-
+ 
         _context.Bookings.Add(newBooking);
         await _context.SaveChangesAsync();
-
+ 
         return CreatedAtAction(
             nameof(GetById),
             new { id = newBooking.Id },
             newBooking
         );
     }
-
+ 
     // PUT: api/Bookings/5
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, BookingUpdateDTO dto)
     {
         var booking = await _context.Bookings.FindAsync(id);
-
+ 
         if (booking == null)
             return NotFound();
-
+ 
         booking.RoomId = dto.RoomId;
         booking.RequestedStart = dto.RequestedStart;
         booking.RequestedEnd = dto.RequestedEnd;
@@ -126,25 +143,68 @@ public class BookingsController : ControllerBase
         booking.Status = dto.Status;
         booking.ParticipantCount = dto.ParticipantCount;
         booking.UpdatedAt = DateTime.UtcNow;
-
+ 
         await _context.SaveChangesAsync();
-
+ 
         return NoContent();
     }
-
+ 
     // DELETE: api/Bookings/5
     [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var booking = await _context.Bookings.FindAsync(id);
-
+ 
         if (booking == null)
             return NotFound();
-
+ 
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+ 
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+ 
+        if (booking.UserId != userId && !User.IsInRole("Admin"))
+            return Forbid();
+ 
         _context.Bookings.Remove(booking);
         await _context.SaveChangesAsync();
-
+ 
         return NoContent();
     }
+ 
+    // GET: api/bookings/mine
+    [Authorize]
+    [HttpGet("CurrentUserBookings")]
+    public async Task<IActionResult> GetMine()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+    
+        var bookings = await _context.Bookings
+            .AsNoTracking()
+            .Where(b => b.UserId == userId)
+            .OrderByDescending(b => b.RequestedStart)
+            .Select(b => new BookingGetDTO
+            {
+                Id = b.Id,
+                UserId = b.UserId,
+                Username = b.User.Username,
+                RoomId = b.RoomId,
+                RoomName = b.Room.Name,
+                RequestedStart = b.RequestedStart,
+                RequestedEnd = b.RequestedEnd,
+                Comment = b.Comment,
+                Status = b.Status,
+                ParticipantCount = b.ParticipantCount,
+                CreatedAt = b.CreatedAt,
+                UpdatedAt = b.UpdatedAt
+            })
+            .ToListAsync();
+    
+        return Ok(bookings);
+    }
 }
+ 
