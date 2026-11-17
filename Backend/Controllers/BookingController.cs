@@ -17,9 +17,6 @@ public class BookingsController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var bookings = await _context.Bookings
-            .Include(r => r.User)
-            .Include(r => r.Room)
-            .Include(r => r.Room.Category)
             .Select(b => new BookingGetDTO
             {
                 Id = b.Id,
@@ -42,7 +39,19 @@ public class BookingsController : ControllerBase
                     {
                         Id = b.Room.Category.Id,
                         Name = b.Room.Category.Name
-                    }
+                    },
+                    RoomEquipment = b.Room.RoomEquipment
+                    .Select(re => new RoomEquipmentWithoutRoomGetDTO
+                    {
+                        Id = re.Id,
+                        Equipment = new EquipmentGetDTO
+                        {
+                            Id = re.Equipment.Id,
+                            Name = re.Equipment.Name
+                        },
+                        Quantity = re.Quantity
+                    })
+                    .ToList()
                 },
                 BookingStart = b.BookingStart,
                 BookingEnd = b.BookingEnd,
