@@ -2,6 +2,7 @@ namespace MercBooking.Utilities.DTO;
 
 public class BookingRequestGetDTO
 {
+    public int Id { get; set; }
     public UserGetDTO User { get; set; } = new UserGetDTO();
 
     public RoomGetDTO Room { get; set; } = new RoomGetDTO();
