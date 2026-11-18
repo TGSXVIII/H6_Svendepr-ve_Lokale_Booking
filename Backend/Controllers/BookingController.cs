@@ -12,7 +12,7 @@ public class BookingsController : ControllerBase
     }
  
     // GET: api/Bookings
-    [Authorize(Roles = "Teacher,Admin")]
+    [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -129,7 +129,7 @@ public class BookingsController : ControllerBase
     }
  
     // POST: api/Bookings
-    [Authorize]
+    [Authorize (Roles = "Teacher,Admin")]
     [HttpPost("create")]
     public async Task<IActionResult> Create(BookingCreateDTO dto)
     {
@@ -159,7 +159,7 @@ public class BookingsController : ControllerBase
             BookingStart = dto.BookingStart,
             BookingEnd = dto.BookingEnd,
             Comment = dto.Comment,
-            Status = BookingStatus.Pending,
+            Status = BookingStatus.Booked,
             ParticipantCount = dto.ParticipantCount,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -237,6 +237,7 @@ public class BookingsController : ControllerBase
             .Where(b => b.UserId == userId)
             .Include(b => b.User)
             .Include(b => b.Room)
+                .ThenInclude(r => r.Category)
             .OrderByDescending(b => b.BookingStart)
             .Select(b => new BookingGetDTO
             {

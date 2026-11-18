@@ -12,7 +12,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // GET: api/BookingRequests
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -66,8 +66,69 @@ public class BookingRequestsController : ControllerBase
         return Ok(requests);
     }
 
-    // GET: api/BookingRequests/5
     [Authorize]
+    [HttpGet("getCurrentUserRequests")]
+    public async Task<IActionResult> GetCurrentUserRequests()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var requests = await _context.BookingRequests
+            .Where(r => r.UserId == userId)
+            .Include(r => r.Room)
+                .ThenInclude(r => r.Category)
+            .Include(r => r.ReviewedBy)
+            .OrderByDescending(r => r.BookedFrom)
+            .Select(r => new BookingRequestGetDTO
+            {
+                User = new UserGetDTO
+                {
+                    Id = r.User.Id,
+                    Username = r.User.Username,
+                    Email = r.User.Email,
+                    Role = r.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = r.Room.Id,
+                    Name = r.Room.Name,
+                    Capacity = r.Room.Capacity,
+                    floor = r.Room.floor,
+                    number = r.Room.number,
+                    isActive = r.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = r.Room.Category.Id,
+                        Name = r.Room.Category.Name
+                    }
+                },
+                ReviewedBy = r.ReviewedBy != null
+                    ? new UserGetDTO
+                    {
+                        Id = r.ReviewedBy.Id,
+                        Username = r.ReviewedBy.Username,
+                        Email = r.ReviewedBy.Email,
+                        Role = r.ReviewedBy.role.ToString()
+                    }
+                    : null,
+                BookedFrom = r.BookedFrom,
+                BookedTo = r.BookedTo,
+                Comment = r.Comment,
+                Status = r.Status,
+                ParticipantCount = r.ParticipantCount,
+                CreatedAt = r.CreatedAt,
+                UpdatedAt = r.UpdatedAt
+            })
+            .ToListAsync();
+
+        return Ok(requests);
+    }
+
+    // GET: api/BookingRequests/5
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -173,7 +234,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // PUT: api/BookingRequests/update/5
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, BookingRequestUpdateDTO dto)
     {
@@ -196,7 +257,7 @@ public class BookingRequestsController : ControllerBase
     }
 
     // DELETE: api/BookingRequests/delete/5
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
