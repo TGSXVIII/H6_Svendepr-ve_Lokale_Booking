@@ -9,7 +9,7 @@ public class Bookings
 
     public int RoomId { get; set; }
     public Rooms Room { get; set; } = new Rooms();
-    
+
     public DateTime BookingStart { get; set; }
     public DateTime BookingEnd { get; set; }
     public string Comment { get; set; } = string.Empty;
@@ -18,4 +18,4 @@ public class Bookings
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
-public enum BookingStatus { booked, Pending }
+public enum BookingStatus { Booked, Pending, Cancelled }
