@@ -130,7 +130,7 @@ public class UsersController : ControllerBase
     // PUT: api/users/changepassword/5
     [Authorize]
     [HttpPut("changepassword/{id}")]
-    public async Task<IActionResult> ChangePassword(int id, Users updatedUser)
+    public async Task<IActionResult> ChangePassword(int id, String newPassword)
     {
         var request = await _context.BookingRequests.FindAsync(id);
 
@@ -153,7 +153,7 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound();
 
-        user.Password = _passwordHasher.HashPassword(user, updatedUser.Password);
+        user.Password = _passwordHasher.HashPassword(user, newPassword);
 
         await _context.SaveChangesAsync();
 
