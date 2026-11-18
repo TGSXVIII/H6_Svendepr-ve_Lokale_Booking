@@ -67,6 +67,62 @@ public class BookingRequestsController : ControllerBase
         return Ok(requests);
     }
 
+    [Authorize(Roles = "Teacher,Admin")]
+    [HttpGet("getPendingRequests")]
+    public async Task<IActionResult> GetPendingRequests()
+    {
+        var requests = await _context.BookingRequests
+            .Where(r => r.Status == RequestStatus.Pending)
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .Include(r => r.Room.Category)
+            .Include(r => r.ReviewedBy)
+            .Select(r => new BookingRequestGetDTO
+            {
+                Id = r.Id,
+                User = new UserGetDTO
+                {
+                    Id = r.User.Id,
+                    Username = r.User.Username,
+                    Email = r.User.Email,
+                    Role = r.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = r.Room.Id,
+                    Name = r.Room.Name,
+                    Capacity = r.Room.Capacity,
+                    floor = r.Room.floor,
+                    number = r.Room.number,
+                    isActive = r.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = r.Room.Category.Id,
+                        Name = r.Room.Category.Name
+                    }
+                },
+                ReviewedBy = r.ReviewedBy != null
+                    ? new UserGetDTO
+                    {
+                        Id = r.ReviewedBy.Id,
+                        Username = r.ReviewedBy.Username,
+                        Email = r.ReviewedBy.Email,
+                        Role = r.ReviewedBy.role.ToString()
+                    }
+                    : null,
+                BookedFrom = r.BookedFrom,
+                BookedTo = r.BookedTo,
+                Comment = r.Comment,
+                Status = r.Status,
+                ParticipantCount = r.ParticipantCount,
+                CreatedAt = r.CreatedAt,
+                UpdatedAt = r.UpdatedAt
+            })
+            .ToListAsync();
+
+        return Ok(requests);
+    }
+
     // GET: api/BookingRequests/getCurrentUserRequests
     [Authorize]
     [HttpGet("getCurrentUserRequests")]
@@ -253,6 +309,36 @@ public class BookingRequestsController : ControllerBase
         request.Comment = dto.Comment;
         request.Status = dto.Status;
         request.ParticipantCount = dto.ParticipantCount;
+        request.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Teacher,Admin")]
+    [HttpPut("review/{id}")]
+    public async Task<IActionResult> Review(int id, BookingRequestReviewDTO dto)
+    {
+        var request = await _context.BookingRequests.FindAsync(id);
+
+        if (request == null)
+            return NotFound();
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var reviewer = await _context.Users.FindAsync(userId);
+        if (reviewer == null)
+        {
+            return BadRequest("Reviewer does not exist.");
+        }
+
+        request.Status = dto.Status;
+        request.ReviewedBy = reviewer;
         request.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
