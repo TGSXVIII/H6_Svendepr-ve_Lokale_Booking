@@ -11,7 +11,7 @@ public class CategoriesController : ControllerBase
         _context = context;
     }
 
-    // GET: api/Categories
+    // GET: api/Categories/getAll
     [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
@@ -27,7 +27,7 @@ public class CategoriesController : ControllerBase
         return Ok(categories);
     }
 
-    // GET: api/Categories/5
+    // GET: api/Categories/getById/5
     [Authorize]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
@@ -47,7 +47,7 @@ public class CategoriesController : ControllerBase
         return Ok(category);
     }
 
-    // POST: api/Categories
+    // POST: api/Categories/create
     [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> Create(CategoryCreateDTO dto)
@@ -73,7 +73,7 @@ public class CategoriesController : ControllerBase
         );
     }
 
-    // PUT: api/Categories/5
+    // PUT: api/Categories/update/5
     [Authorize]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, CategoryUpdateDTO dto)
@@ -90,7 +90,7 @@ public class CategoriesController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/Categories/5
+    // DELETE: api/Categories/delete/5
     [Authorize]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)

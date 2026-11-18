@@ -18,4 +18,4 @@ public class Bookings
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
-public enum BookingStatus { Booked, Pending, Cancelled }
+public enum BookingStatus { Booked, Cancelled }
