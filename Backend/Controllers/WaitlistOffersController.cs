@@ -11,7 +11,7 @@ public class WaitlistOffersController : ControllerBase
         _context = context;
     }
 
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -102,7 +102,7 @@ public class WaitlistOffersController : ControllerBase
         return Ok(offers);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -194,7 +194,7 @@ public class WaitlistOffersController : ControllerBase
         return Ok(offer);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost("create")]
     public async Task<IActionResult> Create(WaitlistOfferCreateDTO dto)
     {
@@ -298,8 +298,26 @@ public class WaitlistOffersController : ControllerBase
 
         return CreatedAtAction(nameof(GetById), new { id = newOffer.Id }, result);
     }
-    
-    [Authorize]
+
+    [Authorize(Roles = "Teacher,Admin")]
+    [HttpPut("AnswerOffer/{id}")]
+    public async Task<IActionResult> AnswerOffer(int id, OfferStatus answer)
+    {
+        var offer = await _context.WaitlistOffers.FindAsync(id);
+
+        if (offer == null)
+            return NotFound();
+
+        offer.Status = answer;
+        offer.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+
+    [Authorize(Roles = "Admin")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, WaitlistOfferUpdateDTO dto)
     {
@@ -330,7 +348,7 @@ public class WaitlistOffersController : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

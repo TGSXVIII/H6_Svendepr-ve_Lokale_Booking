@@ -12,7 +12,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // GET: api/WaitlistEntries
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -58,7 +58,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // GET: api/WaitlistEntries/5
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -109,7 +109,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // POST: api/WaitlistEntries
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpPost("create")]
     public async Task<IActionResult> Create(WaitlistEntryCreateDTO dto)
     {
@@ -152,7 +152,7 @@ public class WaitlistEntriesController : ControllerBase
     }
 
     // PUT: api/WaitlistEntries/update/5
-    [Authorize]
+    [Authorize(Roles = "Teacher,Admin")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, WaitlistEntryUpdateDTO dto)
     {
@@ -187,8 +187,25 @@ public class WaitlistEntriesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Teacher,Admin")]
+    [HttpPut("Cancel/{id}")]
+    public async Task<IActionResult> Cancel(int id)
+    {
+        var entry = await _context.WaitlistEntries.FindAsync(id);
+
+        if (entry == null)
+            return NotFound();
+
+        entry.status = WaitlistStatus.Cancelled;
+        entry.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     // DELETE: api/WaitlistEntries/delete/5
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
