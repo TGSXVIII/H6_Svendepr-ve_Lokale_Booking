@@ -316,6 +316,36 @@ public class BookingRequestsController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Teacher,Admin")]
+    [HttpPut("review/{id}")]
+    public async Task<IActionResult> Review(int id, BookingRequestReviewDTO dto)
+    {
+        var request = await _context.BookingRequests.FindAsync(id);
+
+        if (request == null)
+            return NotFound();
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var reviewer = await _context.Users.FindAsync(userId);
+        if (reviewer == null)
+        {
+            return BadRequest("Reviewer does not exist.");
+        }
+
+        request.Status = dto.Status;
+        request.ReviewedBy = reviewer;
+        request.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     // PUT: api/BookingRequests/cancelRequest/5
     [Authorize]
     [HttpPut("cancelRequest/{id}")]
