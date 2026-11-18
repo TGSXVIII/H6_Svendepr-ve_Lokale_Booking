@@ -67,6 +67,62 @@ public class BookingRequestsController : ControllerBase
         return Ok(requests);
     }
 
+    [Authorize(Roles = "Teacher,Admin")]
+    [HttpGet("getPendingRequests")]
+    public async Task<IActionResult> GetPendingRequests()
+    {
+        var requests = await _context.BookingRequests
+            .Where(r => r.Status == RequestStatus.Pending)
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .Include(r => r.Room.Category)
+            .Include(r => r.ReviewedBy)
+            .Select(r => new BookingRequestGetDTO
+            {
+                Id = r.Id,
+                User = new UserGetDTO
+                {
+                    Id = r.User.Id,
+                    Username = r.User.Username,
+                    Email = r.User.Email,
+                    Role = r.User.role.ToString()
+                },
+                Room = new RoomGetDTO
+                {
+                    Id = r.Room.Id,
+                    Name = r.Room.Name,
+                    Capacity = r.Room.Capacity,
+                    floor = r.Room.floor,
+                    number = r.Room.number,
+                    isActive = r.Room.isActive,
+                    Category = new CategoryGetDTO
+                    {
+                        Id = r.Room.Category.Id,
+                        Name = r.Room.Category.Name
+                    }
+                },
+                ReviewedBy = r.ReviewedBy != null
+                    ? new UserGetDTO
+                    {
+                        Id = r.ReviewedBy.Id,
+                        Username = r.ReviewedBy.Username,
+                        Email = r.ReviewedBy.Email,
+                        Role = r.ReviewedBy.role.ToString()
+                    }
+                    : null,
+                BookedFrom = r.BookedFrom,
+                BookedTo = r.BookedTo,
+                Comment = r.Comment,
+                Status = r.Status,
+                ParticipantCount = r.ParticipantCount,
+                CreatedAt = r.CreatedAt,
+                UpdatedAt = r.UpdatedAt
+            })
+            .ToListAsync();
+
+        return Ok(requests);
+    }
+
     // GET: api/BookingRequests/getCurrentUserRequests
     [Authorize]
     [HttpGet("getCurrentUserRequests")]
