@@ -84,6 +84,7 @@ public class BookingRequestsController : ControllerBase
             .OrderByDescending(r => r.BookedFrom)
             .Select(r => new BookingRequestGetDTO
             {
+                Id = r.Id,
                 User = new UserGetDTO
                 {
                     Id = r.User.Id,
