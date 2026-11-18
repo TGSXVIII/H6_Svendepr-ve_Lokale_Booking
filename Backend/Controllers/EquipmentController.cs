@@ -47,8 +47,30 @@ public class EquipmentController : ControllerBase
         return Ok(equipment);
     }
 
-    // POST: api/Equipment
     [Authorize]
+    [HttpGet("getByRoomId/{Id}")]
+    public async Task<IActionResult> GetByRoomId(int Id)
+    {
+        var roomEquipment = await _context.RoomEquipment
+            .Where(re => re.RoomId == Id)
+            .Include(re => re.Equipment)
+            .Select(re => new RoomEquipmentWithoutRoomGetDTO
+            {
+                Id = re.Id,
+                Equipment = new EquipmentGetDTO
+                {
+                    Id = re.Equipment.Id,
+                    Name = re.Equipment.Name,
+                },
+                Quantity = re.Quantity
+            })
+            .ToListAsync();
+
+        return Ok(roomEquipment);
+    }
+
+    // POST: api/Equipment
+    [Authorize(Roles = "Admin")]
     [HttpPost("create")]
     public async Task<IActionResult> Create(EquipmentCreateDTO dto)
     {
@@ -74,7 +96,7 @@ public class EquipmentController : ControllerBase
     }
 
     // PUT: api/Equipment/5
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, EquipmentUpdateDTO dto)
     {
@@ -91,7 +113,7 @@ public class EquipmentController : ControllerBase
     }
 
     // DELETE: api/Equipment/5
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

@@ -11,7 +11,7 @@ public class RoomEquipmentController : ControllerBase
         _context = context;
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
@@ -48,6 +48,7 @@ public class RoomEquipmentController : ControllerBase
         return Ok(roomEquipment);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -88,7 +89,7 @@ public class RoomEquipmentController : ControllerBase
         return Ok(roomEquipment);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost("create")]
     public async Task<IActionResult> Create(RoomEquipmentCreateDTO dto)
     {
@@ -144,7 +145,7 @@ public class RoomEquipmentController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = newRoomEquipment.Id }, result);
     }
     
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, RoomEquipmentUpdateDTO dto)
     {
@@ -176,7 +177,7 @@ public class RoomEquipmentController : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

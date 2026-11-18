@@ -21,4 +21,4 @@ public class BookingRequests
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
-public enum RequestStatus { approved, Pending, rejected }
+public enum RequestStatus { Approved, Pending, Rejected, Cancelled }

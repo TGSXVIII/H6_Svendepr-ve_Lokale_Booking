@@ -35,6 +35,7 @@ public class RoomsController : ControllerBase
         return Ok(rooms);
     }
 
+    // GET: api/rooms/getActive
     [Authorize]
     [HttpGet("getActive")]
     public async Task<IActionResult> GetActive()
@@ -61,6 +62,7 @@ public class RoomsController : ControllerBase
         return Ok(rooms);
     }
     
+    // GET: api/rooms/getByCategory/5
     [Authorize]
     [HttpGet("getByCategory/{categoryId}")]
     public async Task<IActionResult> GetByCategory(int categoryId)
@@ -88,6 +90,7 @@ public class RoomsController : ControllerBase
         return Ok(rooms);
     }
 
+    // GET: api/rooms/getNotBooked/{start}/{end}
     [Authorize]
     [HttpGet("getNotBooked/{start}/{end}")]
     public async Task<IActionResult> GetNotBooked(DateTime start, DateTime end)
@@ -125,9 +128,9 @@ public class RoomsController : ControllerBase
         return Ok(rooms);
     }
 
-    // GET: api/rooms/5
+    // GET: api/rooms/GetById/5
     [Authorize]
-    [HttpGet("GetRoom/{id}")]
+    [HttpGet("GetById/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
         var room = await _context.Rooms
@@ -155,7 +158,7 @@ public class RoomsController : ControllerBase
         return Ok(room);
     }
 
-    // POST: api/rooms
+    // POST: api/rooms/Create
     [Authorize]
     [HttpPost("Create")]
     public async Task<IActionResult> Create(RoomCreateDTO roomDTO)

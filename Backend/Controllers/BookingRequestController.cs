@@ -23,6 +23,7 @@ public class BookingRequestsController : ControllerBase
             .Include(r => r.ReviewedBy)
             .Select(r => new BookingRequestGetDTO
             {
+                Id = r.Id,
                 User = new UserGetDTO
                 {
                     Id = r.User.Id,
@@ -66,6 +67,7 @@ public class BookingRequestsController : ControllerBase
         return Ok(requests);
     }
 
+    // GET: api/BookingRequests/getCurrentUserRequests
     [Authorize]
     [HttpGet("getCurrentUserRequests")]
     public async Task<IActionResult> GetCurrentUserRequests()
@@ -141,6 +143,7 @@ public class BookingRequestsController : ControllerBase
             .Include(r => r.ReviewedBy)
             .Select(r => new BookingRequestGetDTO
             {
+                Id = r.Id,
                 User = new UserGetDTO
                 {
                     Id = r.User.Id,
@@ -255,6 +258,35 @@ public class BookingRequestsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    // PUT: api/BookingRequests/cancelRequest/5
+    [Authorize]
+    [HttpPut("cancelRequest/{id}")]
+    public async Task<IActionResult> CancelOwn(int id)
+    {
+        var request = await _context.BookingRequests.FindAsync(id);
+
+        if (request == null)
+            return NotFound();
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        if (request.UserId != userId)
+        {
+            return Forbid("Du kan ikke annullere andre brugers booking requests.");
+        }
+
+        request.Status = RequestStatus.Cancelled;
+        request.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return Ok("Din booking anmodning er blevet annulleret.");
     }
 
     // DELETE: api/BookingRequests/delete/5

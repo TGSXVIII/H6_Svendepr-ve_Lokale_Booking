@@ -12,25 +12,55 @@ public class UsersController : ControllerBase
     }
 
     // GET: api/users
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
     {
-        var users = await _context.Users.ToListAsync();
+        var users = await _context.Users.Select(u => new UserGetDTO
+            {
+                Id = u.Id,
+                Username = u.Username,
+                Email = u.Email,
+                Role = u.role.ToString()
+            }).ToListAsync();
         return Ok(users);
     }
 
     // GET: api/users/5
-    [Authorize]
+    [Authorize(Roles = "Teacher, Admin")]
     [HttpGet("GetUser/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = await _context.Users.Where(u => u.Id == id).Select(u => new UserGetDTO
+            {
+                Id = u.Id,
+                Username = u.Username,
+                Email = u.Email,
+                Role = u.role.ToString()
+            }).FirstOrDefaultAsync();
 
         if (user == null)
             return NotFound();
 
         return Ok(user);
+    }
+
+    [Authorize(Roles = "Teacher, Admin")]
+    [HttpGet("GetAllStudents")]
+    public async Task<IActionResult> GetAllStudents()
+    {
+        var students = await _context.Users
+            .Where(u => u.role == Role.Student)
+            .Select(u => new UserGetDTO
+            {
+                Id = u.Id,
+                Username = u.Username,
+                Email = u.Email,
+                Role = u.role.ToString()
+            })
+            .ToListAsync();
+
+        return Ok(students);
     }
 
     // POST: api/users
@@ -66,8 +96,24 @@ public class UsersController : ControllerBase
     // PUT: api/users/5
     [Authorize]
     [HttpPut("update/{id}")]
-    public async Task<IActionResult> Update(int id, Users updatedUser)
+    public async Task<IActionResult> Update(int id, UserUpdateDTO updatedUser)
     {
+        var request = await _context.BookingRequests.FindAsync(id);
+
+        if (request == null)
+            return NotFound();
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        if (request.UserId != userId && !User.IsInRole("Admin"))
+        {
+            return Forbid("Du kan ikke ændre andre brugers oplysninger.");
+        }
+
         var user = await _context.Users.FindAsync(id);
 
         if (user == null)
@@ -78,7 +124,7 @@ public class UsersController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok("Brugeren er blevet opdateret.");
     }
 
     // PUT: api/users/changepassword/5
@@ -86,6 +132,22 @@ public class UsersController : ControllerBase
     [HttpPut("changepassword/{id}")]
     public async Task<IActionResult> ChangePassword(int id, Users updatedUser)
     {
+        var request = await _context.BookingRequests.FindAsync(id);
+
+        if (request == null)
+            return NotFound();
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        if (request.UserId != userId && !User.IsInRole("Admin"))
+        {
+            return Forbid("Du kan ikke ændre andre brugers adgangskoder.");
+        }
+
         var user = await _context.Users.FindAsync(id);
 
         if (user == null)
@@ -95,7 +157,7 @@ public class UsersController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok("Adgangskoden er blevet ændret.");
     }
 
     // DELETE: api/users/5
@@ -103,6 +165,22 @@ public class UsersController : ControllerBase
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
+        var request = await _context.BookingRequests.FindAsync(id);
+
+        if (request == null)
+            return NotFound();
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        if (request.UserId != userId && !User.IsInRole("Admin"))
+        {
+            return Forbid("Du kan ikke slette andre brugere.");
+        }
+
         var user = await _context.Users.FindAsync(id);
 
         if (user == null)
@@ -111,6 +189,6 @@ public class UsersController : ControllerBase
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok("Brugeren er blevet slettet.");
     }
 }
