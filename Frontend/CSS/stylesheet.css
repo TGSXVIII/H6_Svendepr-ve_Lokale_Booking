@@ -3,6 +3,7 @@
     min-height: 100vh;
     min-height: 100svh;
     padding: 100px 24px 48px;
+    box-sizing: border-box;
 
     display: flex;
     align-items: center;
@@ -14,28 +15,33 @@
     background-repeat: no-repeat;
 }
 
-/* Området med logo, velkomsttekst og knap */
+/* Logo, velkomsttekst og knap */
 .welcome {
     width: 100%;
     max-width: 520px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    justify-content: center;
+    gap: 10px;
+
     text-align: center;
 }
 
-/* Stort logo */
 .welcome-logo {
     display: block;
-    width: 550px;
+    width: 100%;
     max-width: 100%;
     height: auto;
+    margin: 0;
 }
 
-/* Hvid boks med velkomsttekst */
+/* Velkomstkort */
 .welcome-card {
     width: 100%;
+    box-sizing: border-box;
+    margin: 0;
     padding: 22px 26px;
     border-radius: 20px;
     background-color: #fff;
@@ -52,25 +58,7 @@
     line-height: 1.5;
 }
 
-.home .welcome {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.home .welcome-logo {
-    display: block;
-    height: auto;
-    margin: 0;
-}
-
-.home .welcome-card {
-    margin: 0;
-}
-
-/* Tilpasning til mindre skærme */
+/* Mindre skærme */
 @media (max-width: 600px) {
     .welcome-logo {
         width: 260px;

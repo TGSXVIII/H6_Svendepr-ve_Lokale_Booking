@@ -165,10 +165,7 @@
     }
 
     .floor-viewer,
-    .floor-viewer a {
-        height: auto;
-    }
-
+    .floor-viewer a,
     .floor-viewer img {
         height: auto;
     }
