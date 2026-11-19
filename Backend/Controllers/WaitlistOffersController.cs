@@ -313,6 +313,43 @@ public class WaitlistOffersController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        if (answer == OfferStatus.Approved)
+        {
+            var booking = await _context.Bookings.FindAsync(offer.BookingId);
+            if (booking != null)
+            {
+                booking.UserId = offer.WaitlistEntry.UserId;
+                booking.Status = BookingStatus.Booked;
+                booking.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+        }
+        else if (answer == OfferStatus.Rejected)
+        {
+            var waitlistEntry = await _context.WaitlistEntries
+                .Where(e => e.RoomId == offer.Booking.RoomId &&
+                    e.RequestedStart < offer.Booking.BookingEnd &&
+                    e.RequestedEnd > offer.Booking.BookingStart &&
+                    e.status == WaitlistStatus.Pending)
+                .OrderBy(e => e.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if (waitlistEntry != null)
+            {
+                var newOffer = new WaitlistOffers
+                {
+                    WaitlistEntryId = waitlistEntry.Id,
+                    BookingId = offer.Booking.Id,
+                    Status = OfferStatus.Pending,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                _context.WaitlistOffers.Add(newOffer);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         return NoContent();
     }
 

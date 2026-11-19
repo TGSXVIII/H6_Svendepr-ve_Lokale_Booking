@@ -74,38 +74,4 @@ public class AuthController : ControllerBase
             }
         });
     }
- 
-    // GET: api/auth/CurrentUser
-    [Authorize]
-    [HttpGet("CurrentUser")]
-    public async Task<IActionResult> CurrentUser()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
- 
-        if (!int.TryParse(userId, out var id))
-            return Unauthorized();
- 
-        var user = await _context.Users
-            .AsNoTracking()
-            .Where(u => u.Id == id)
-            .Select(u => new
-            {
-                u.Id,
-                u.Username,
-                u.Email,
-                u.role
-            })
-            .FirstOrDefaultAsync();
- 
-        if (user == null)
-            return Unauthorized();
- 
-        return Ok(new
-        {
-            user.Id,
-            user.Username,
-            user.Email,
-            role = user.role.ToString()
-        });
-    }
 }

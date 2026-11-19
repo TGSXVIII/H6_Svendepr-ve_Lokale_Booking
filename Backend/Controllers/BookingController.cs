@@ -197,7 +197,55 @@ public class BookingsController : ControllerBase
  
         return NoContent();
     }
- 
+
+    [Authorize]
+    [HttpPut("Cancel/{id}")]
+    public async Task<IActionResult> Cancel(int id)
+    {
+        var booking = await _context.Bookings.FindAsync(id);
+
+        if (booking == null)
+            return NotFound();
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+        if (booking.User.Id != userId && !User.IsInRole("Admin"))
+            return Forbid();
+
+        booking.Status = BookingStatus.Cancelled;
+        booking.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        var waitlistEntry = await _context.WaitlistEntries
+            .Where(e => e.RoomId == booking.RoomId &&
+                        e.RequestedStart < booking.BookingEnd &&
+                        e.RequestedEnd > booking.BookingStart &&
+                        e.status == WaitlistStatus.Pending)
+            .OrderBy(e => e.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (waitlistEntry != null)
+        {
+            var newOffer = new WaitlistOffers
+            {
+                WaitlistEntryId = waitlistEntry.Id,
+                BookingId = booking.Id,
+                Status = OfferStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.WaitlistOffers.Add(newOffer);
+            await _context.SaveChangesAsync();
+        }
+
+        return NoContent();
+    }
+
     // DELETE: api/Bookings/5
     [Authorize]
     [HttpDelete("delete/{id}")]
