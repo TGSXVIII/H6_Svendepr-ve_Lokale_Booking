@@ -191,6 +191,9 @@ namespace MercBooking.Api.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("LastEditedById")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -210,6 +213,8 @@ namespace MercBooking.Api.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("LastEditedById");
+
                     b.ToTable("Rooms");
                 });
 
@@ -225,6 +230,9 @@ namespace MercBooking.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("LastEditedById")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
@@ -237,6 +245,8 @@ namespace MercBooking.Api.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LastEditedById");
 
                     b.ToTable("Users");
                 });
@@ -389,7 +399,22 @@ namespace MercBooking.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MercBooking.Api.Models.Users", "LastEditedBy")
+                        .WithMany()
+                        .HasForeignKey("LastEditedById");
+
                     b.Navigation("Category");
+
+                    b.Navigation("LastEditedBy");
+                });
+
+            modelBuilder.Entity("MercBooking.Api.Models.Users", b =>
+                {
+                    b.HasOne("MercBooking.Api.Models.Users", "LastEditedBy")
+                        .WithMany()
+                        .HasForeignKey("LastEditedById");
+
+                    b.Navigation("LastEditedBy");
                 });
 
             modelBuilder.Entity("MercBooking.Api.Models.WaitlistEntries", b =>
