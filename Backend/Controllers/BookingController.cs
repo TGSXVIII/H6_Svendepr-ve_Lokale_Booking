@@ -150,6 +150,24 @@ public class BookingsController : ControllerBase
         {
             return BadRequest("Room does not exist.");
         }
+
+        if (dto.BookingStart >= dto.BookingEnd)
+        {
+            return BadRequest("Booking start tid skal være før slut tid.");
+        }
+
+        if (dto.BookingStart < DateTime.UtcNow)
+        {
+            return BadRequest("Booking start tid skal være i fremtiden.");
+        }
+
+        if (await _context.Bookings.AnyAsync(b =>
+            b.RoomId == dto.RoomId &&
+            b.BookingStart < dto.BookingEnd &&
+            b.BookingEnd > dto.BookingStart))
+        {
+            return BadRequest("The room is already booked during this period.");
+        }
  
         var newBooking = new Bookings
         {
