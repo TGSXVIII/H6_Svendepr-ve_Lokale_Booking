@@ -251,7 +251,7 @@ async function loadRooms() {
         };
 
         const userResponse = await fetch(
-            "http://localhost:5265/api/auth/CurrentUser",
+            "http://localhost:5265/api/users/CurrentUser",
             { headers }
         );
 
@@ -593,7 +593,7 @@ bookingForm.addEventListener("submit", async (event) => {
 
     try {
         const userResponse = await fetch(
-            "http://localhost:5265/api/auth/CurrentUser",
+            "http://localhost:5265/api/users/CurrentUser",
             {
                 headers: {
                     Authorization: `Bearer ${token}`
