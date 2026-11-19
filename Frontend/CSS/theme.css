@@ -44,7 +44,6 @@
 /* Hvide kort og paneler */
 [data-theme="dark"] :is(
     .welcome-card,
-    .auth-card,
     .account-card,
     .rooms-panel,
     .floor-panel,
@@ -105,7 +104,6 @@
     .floor-help,
     .profile-intro,
     .profile-fields dt,
-    .auth-divider,
     .account-divider
 ) {
     color: var(--theme-muted);
@@ -115,7 +113,6 @@
 [data-theme="dark"] :is(
     .floor-document-link,
     .profile-secondary-link,
-    .auth-card a:not(.button),
     .account-card a:not(.button)
 ) {
     color: var(--theme-link);
@@ -125,7 +122,6 @@
 [data-theme="dark"] :is(
     .button-secondary,
     .profile-role,
-    .header-username,
     .header-login
 ) {
     background: #353153;
@@ -149,16 +145,9 @@
 }
 
 /* Divider på login/signup */
-[data-theme="dark"] :is(
-    .auth-divider,
-    .account-divider
-)::before,
-[data-theme="dark"] :is(
-    .auth-divider,
-    .account-divider
-)::after {
+[data-theme="dark"] .account-divider::before,
+[data-theme="dark"] .account-divider::after {
     background: var(--theme-border);
-    border-color: var(--theme-border);
 }
 
 /* Adgangskodekrav */
@@ -176,10 +165,9 @@
     outline-offset: 3px;
 }
 
-/* Logoerne har mørk tekst og får derfor en lys baggrund */
+/* Vis logoerne hvide på mørk baggrund. */
 [data-theme="dark"] :is(
     .welcome-logo,
-    .auth-logo,
     .account-logo,
     .rooms-logo,
     .floor-logo,
@@ -187,6 +175,7 @@
 ) {
     background: transparent;
     border-radius: 0;
+    filter: brightness(0) invert(1);
 }
 
 /* Behold plantegningen lys og uændret */
@@ -194,23 +183,6 @@
     background: white;
     border-color: var(--theme-border);
     color: #171717;
-}
-
-.menu-toggle,
-[data-theme="dark"] .menu-toggle {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-.menu-toggle span,
-[data-theme="dark"] .menu-toggle span {
-    background: #211bb0;
-}
-
-html[data-theme="dark"] .profile-panel {
-    background: var(--theme-panel);
-    color: var(--theme-text);
 }
 
 /* Forsiden */
@@ -230,7 +202,6 @@ html[data-theme="dark"] .home {
 /* Sider med skolebilledet på body */
 html[data-theme="dark"] body:is(
     .account-page,
-    .auth-page,
     .rooms-page,
     .floor-page,
     .profile-page
@@ -248,12 +219,6 @@ html[data-theme="dark"] body:is(
     background-attachment: fixed;
 }
 
-/* Navneboksen matcher infoboksens baggrund. */
-.header-username {
-    background: white;
-    color: #211bb0;
-}
-
 [data-theme="dark"] .header-username {
     background: var(--theme-panel);
     color: var(--theme-text);
@@ -263,7 +228,6 @@ html[data-theme="dark"] body:is(
 html[data-theme="light"] .home,
 html[data-theme="light"] body:is(
     .account-page,
-    .auth-page,
     .rooms-page,
     .floor-page,
     .profile-page
@@ -279,14 +243,4 @@ html[data-theme="light"] body:is(
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-}
-
-[data-theme="dark"] :is(
-    .welcome-logo,
-    .account-logo,
-    .rooms-logo,
-    .floor-logo,
-    .profile-logo
-) {
-    filter: brightness(0) invert(1);
 }

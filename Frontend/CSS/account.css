@@ -1,4 +1,4 @@
-/* Fælles indgang til login og oprettelse */
+/* Fælles layout til login og oprettelse */
 .account-page {
     min-height: 100vh;
     min-height: 100svh;
@@ -18,12 +18,11 @@
 .account-card {
     width: 100%;
     max-width: 400px;
-    padding: 40px 32px;
+    padding: 64px 32px 40px;
     border-radius: 20px;
     background-color: #fff;
     text-align: center;
     position: relative;
-    padding-top: 64px;
 }
 
 .account-logo {
@@ -44,18 +43,6 @@
     line-height: 1.5;
 }
 
-.account-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.account-back {
-    display: inline-block;
-    margin-top: 40px;
-    color: var(--brand-blue);
-}
-
 .account-divider {
     display: flex;
     align-items: center;
@@ -71,17 +58,6 @@
     flex: 1;
     height: 1px;
     background-color: #ddd;
-}
-
-.account-forgot-password {
-    display: inline-block;
-    color: var(--brand-blue);
-    font-size: 16px;
-    text-decoration: none;
-}
-
-.account-forgot-password:hover {
-    text-decoration: underline;
 }
 
 .account-back-arrow {

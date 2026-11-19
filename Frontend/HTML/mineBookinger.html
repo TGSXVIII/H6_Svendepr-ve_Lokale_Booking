@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merc Booking – Mine bookinger</title>
+
+    <script src="../JavaScript/theme.js"></script>
+
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/lokaleoversigt.css">
+    <link rel="stylesheet" href="../CSS/mineBookinger.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+
+    <script src="../JavaScript/session.js" defer></script>
+    <script src="../JavaScript/script.js" defer></script>
+    <script src="../JavaScript/mineBookinger.js" defer></script>
+</head>
+
+<body class="rooms-page">
+    <div id="sharedNavigation"></div>
+
+    <main class="rooms-panel">
+        <a href="dashboard.html" aria-label="Til forsiden">
+            <img
+                class="rooms-logo"
+                src="../../Utilities/Images/Merc_Booking.png"
+                alt="Merc Booking"
+            >
+        </a>
+
+        <h1>Mine bookinger</h1>
+<p>Se dine reservationer og deres status.</p>
+
+<div id="bookingViews" class="booking-views" role="group" aria-label="Vælg visning" hidden>    
+     <button
+        id="showMyBookings"
+        type="button"
+        aria-pressed="true"
+        aria-controls="myBookingsPanel"
+    >
+        Mine bookinger
+    </button>
+
+    <button
+        id="showApprovals"
+        type="button"
+        aria-pressed="false"
+        aria-controls="approvalsPanel"
+        hidden
+    >
+        Booking anmodninger
+    </button>
+</div>
+
+<p id="bookingAccessMessage" role="status"></p>
+
+    <section id="myBookingsPanel" aria-label="Mine bookinger">
+        <div class="bookings-toolbar">
+            <div id="bookingStatusFilterContainer" class="bookings-filter" hidden>
+                <label for="bookingStatusFilter">Vis bookinger</label>
+
+                <select id="bookingStatusFilter">
+                    <option value="all">Alle</option>
+                    <option value="pending">Afventer godkendelse</option>
+                    <option value="booked">Godkendte</option>
+                    <option value="rejected">Afviste</option>
+                    <option value="cancelled">Annullerede</option>
+                </select>
+            </div>
+
+            <a class="button" href="lokaleoversigt.html">
+                Find og book et lokale
+            </a>
+        </div>
+
+        <p id="bookingsMessage" role="status"></p>
+
+        <button id="retryBookings" class="button" type="button" hidden>
+            Prøv igen
+        </button>
+
+        <section
+            id="bookingsList"
+            class="bookings-list"
+            aria-label="Dine bookinger"
+        ></section>
+    </section>
+
+    <section
+        id="approvalsPanel"
+        aria-labelledby="approvalsTitle"
+        hidden
+    >
+        <h2 id="approvalsTitle">Booking anmodninger</h2>
+
+        <p>Her kan du behandle elevernes booking anmodninger.</p>
+
+        <p id="approvalsMessage" role="status">
+            Booking anmodninger er endnu ikke tilsluttet.
+        </p>
+
+        <div id="approvalsList" class="bookings-list"></div>
+    </section>
+    </main>
+</body>
+</html>

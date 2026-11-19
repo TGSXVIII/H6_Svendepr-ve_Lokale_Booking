@@ -65,8 +65,6 @@
 }
 
 .search-button {
-    grid-column: 1 / -1;
-    justify-self: start;
     border: none;
     font-family: inherit;
     cursor: pointer;
@@ -120,6 +118,7 @@
 }
 
 .booking-dialog {
+    position: relative;
     width: min(460px, calc(100% - 32px));
     max-height: calc(100dvh - 32px);
     padding: 28px;
@@ -132,30 +131,192 @@
     background-color: rgb(0 0 0 / 50%);
 }
 
-.booking-heading {
+.room-actions {
+    grid-column: 1 / -1;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    align-items: center;
+    gap: 20px;
 }
 
-.booking-heading h2 {
+.room-actions > .button {
+    width: auto;
     margin: 0;
 }
 
-.booking-close {
-    padding: 0 8px;
-    border: none;
-    background: none;
-    color: var(--brand-blue);
-    font-size: 32px;
-    cursor: pointer;
+.room-actions > a {
+    margin-left: auto;
+    text-align: center;
+}
+
+.equipment-note {
+    margin: 10px 0 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
 }
 
 #bookingSummary {
     margin: 0;
     line-height: 1.6;
     white-space: pre-line;
+}
+
+.booking-dialog .booking-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    left: auto;
+
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.booking-dialog #bookingTitle {
+    padding-right: 40px;
+}
+
+#bookingPurpose {
+    display: block;
+    width: 100%;
+    height: 160px;
+    min-height: 160px;
+    max-height: 160px;
+    box-sizing: border-box;
+    padding: 14px;
+
+    resize: none;
+    overflow-y: auto;
+
+    border: 1px solid #bbb;
+    border-radius: 12px;
+    font: inherit;
+    line-height: 1.5;
+}
+
+.character-counter {
+    margin: 6px 0 0;
+    text-align: right;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+[data-theme="dark"] .character-counter {
+    color: var(--theme-muted);
+}
+
+.booking-notification {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 16px 24px;
+
+    border: 1px solid #a3d9b5;
+    border-radius: 14px;
+    background: #dff4e7;
+    color: #145c32;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 20%);
+
+    text-align: center;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.booking-notification:empty {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}
+
+[data-theme="dark"] .booking-notification {
+    background: #203e30;
+    color: #9ce5b6;
+    border-color: #527b63;
+}
+
+.brand-loader {
+    display: flex;
+    justify-content: center;
+    padding: 36px 0 16px;
+}
+
+.brand-loader[hidden] {
+    display: none;
+}
+
+.brand-loader-symbol {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 120px;
+    height: 120px;
+}
+
+.brand-loader-symbol::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgb(33 27 176 / 12%);
+    border-top-color: var(--brand-blue);
+    border-radius: 50%;
+    animation: brand-loader-spin 1.2s linear infinite;
+}
+
+.brand-loader-symbol img {
+    display: block;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    animation: brand-loader-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes brand-loader-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes brand-loader-pulse {
+    0%, 100% {
+        transform: scale(0.94);
+        opacity: 0.65;
+    }
+
+    50% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+[data-theme="dark"] .brand-loader-symbol::before {
+    border-color: rgb(197 194 255 / 15%);
+    border-top-color: var(--theme-link);
+}
+
+[data-theme="dark"] .brand-loader-symbol img {
+    filter: brightness(0) invert(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-loader-symbol::before,
+    .brand-loader-symbol img {
+        animation: none;
+    }
 }
 
 @media (max-width: 900px) {
@@ -179,31 +340,6 @@
         grid-template-columns: 1fr;
     }
 
-    .search-button {
-        width: 100%;
-    }
-}
-
-.room-actions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
-
-.room-actions > .button {
-    width: auto;
-    margin: 0;
-}
-
-.room-actions > a {
-    margin-left: auto;
-    text-align: center;
-}
-
-/* På små skærme placeres knapperne under hinanden. */
-@media (max-width: 600px) {
     .room-actions {
         flex-direction: column;
         align-items: stretch;
