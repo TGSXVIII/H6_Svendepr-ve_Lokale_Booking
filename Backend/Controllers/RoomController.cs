@@ -9,7 +9,7 @@ public class RoomsController : ControllerBase
         _context = context;
     }
 
-    // GET: api/rooms
+    // GET: api/rooms/getAll
     [Authorize(Roles = "Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
