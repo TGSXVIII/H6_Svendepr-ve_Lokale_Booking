@@ -343,6 +343,27 @@ public class BookingRequestsController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        if (dto.Status == RequestStatus.Approved)
+        {
+            var newBooking = new Bookings
+            {
+                UserId = request.UserId,
+                User = request.User,
+                RoomId = request.RoomId,
+                Room = request.Room,
+                BookingStart = request.BookedFrom,
+                BookingEnd = request.BookedTo,
+                Comment = request.Comment,
+                Status = BookingStatus.Booked,
+                ParticipantCount = request.ParticipantCount,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.Bookings.Add(newBooking);
+            await _context.SaveChangesAsync();
+        }
+
         return NoContent();
     }
 

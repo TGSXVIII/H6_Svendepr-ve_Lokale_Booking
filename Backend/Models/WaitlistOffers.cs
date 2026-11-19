@@ -14,4 +14,4 @@ public class WaitlistOffers
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
-public enum OfferStatus { approved, Pending, rejected }
+public enum OfferStatus { Approved, Pending, Rejected }
