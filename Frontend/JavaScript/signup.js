@@ -9,12 +9,11 @@ const uppercaseRequirement = document.getElementById("passwordUppercase");
 const specialRequirement = document.getElementById("passwordSpecial");
 
 function validateUsername() {
-    passwordInput.setCustomValidity(
-        password.length === 0
-            ? ""
-            : missingRequirements.length > 0
-                ? "Adgangskoden skal opfylde de tre krav nedenfor."
-                : ""
+    usernameInput.setCustomValidity(
+        usernameInput.value.length > 0 &&
+        usernameInput.value.trim().length === 0
+            ? "Brugernavnet må ikke kun bestå af mellemrum."
+            : ""
     );
 }
 
@@ -44,7 +43,7 @@ function validatePassword() {
     }
 
     passwordInput.setCustomValidity(
-        missingRequirements.length > 0
+        password.length > 0 && missingRequirements.length > 0
             ? `Adgangskoden skal indeholde ${missingRequirements.join(", ")}.`
             : ""
     );
@@ -54,6 +53,7 @@ function validatePassword() {
 
 function validatePasswordConfirmation() {
     confirmPasswordInput.setCustomValidity(
+        confirmPasswordInput.value.length > 0 &&
         confirmPasswordInput.value !== passwordInput.value
             ? "Adgangskoderne skal være ens."
             : ""
@@ -62,6 +62,7 @@ function validatePasswordConfirmation() {
 
 usernameInput.addEventListener("input", validateUsername);
 passwordInput.addEventListener("input", validatePassword);
+
 confirmPasswordInput.addEventListener(
     "input",
     validatePasswordConfirmation
@@ -71,7 +72,7 @@ signupForm.addEventListener("input", () => {
     signupMessage.textContent = "";
 });
 
-signupForm.addEventListener("submit", (event) => {
+signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     validateUsername();
@@ -81,6 +82,56 @@ signupForm.addEventListener("submit", (event) => {
         return;
     }
 
-    signupMessage.textContent =
-        "Oplysningerne opfylder kravene. Oprettelse er endnu ikke tilsluttet serveren.";
+    const submitButton = signupForm.querySelector('button[type="submit"]');
+
+    if (submitButton.disabled) {
+        return;
+    }
+
+    const emailInput = document.getElementById("email");
+
+    submitButton.disabled = true;
+    signupMessage.textContent = "Opretter din konto...";
+
+    try {
+        const response = await fetch("http://localhost:5265/api/users/Register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: usernameInput.value.trim(),
+                email: emailInput.value.trim(),
+                password: passwordInput.value
+            })
+        });
+
+        if (!response.ok) {
+            if (response.status === 409) {
+                signupMessage.textContent =
+                    "Brugernavnet eller e-mailadressen er allerede i brug.";
+            } else if (response.status === 400) {
+                signupMessage.textContent =
+                    "Oplysningerne blev afvist af serveren. Kontrollér felterne.";
+            } else {
+                signupMessage.textContent =
+                    `Kontoen kunne ikke oprettes (HTTP ${response.status}).`;
+            }
+
+            return;
+        }
+
+        passwordInput.value = "";
+        confirmPasswordInput.value = "";
+
+        window.location.replace("login.html");
+    } catch (error) {
+        console.error("Fejl under oprettelse:", error);
+
+        signupMessage.textContent =
+            "Kunne ikke bekræfte oprettelsen. Kontrollér forbindelsen. " +
+            "Prøv at logge ind, før du forsøger at oprette kontoen igen.";
+    } finally {
+        submitButton.disabled = false;
+    }
 });

@@ -25,20 +25,22 @@ function showFloor(level) {
     );
 
     const image = document.createElement("img");
-    image.src = imagePath;
     image.alt = `Plantegning med lokaler på niveau ${level}`;
 
     image.addEventListener("error", () => {
         const message = document.createElement("p");
+        message.setAttribute("role", "alert");
         message.textContent =
-            `Billedet til niveau ${level} kunne ikke indlæses. ` +
-            "Kontrollér filens navn og placering.";
+            `Plantegningen for niveau ${level} kunne ikke indlæses. ` +
+            "Prøv at åbne PDF-oversigten.";
 
         link.replaceWith(message);
     });
 
     link.append(image);
     floorViewer.replaceChildren(link);
+
+    image.src = imagePath;
 }
 
 for (const button of floorButtons) {

@@ -51,22 +51,14 @@ button:focus-visible {
     outline-offset: 4px;
 }
 
-/* Burgerknap */
-.site-header {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-}
-
 .menu-toggle {
     width: 56px;
     height: 56px;
     padding: 10px;
     border: none;
     border-radius: 10px;
-    background-color: #fff;
+    background: transparent;
     cursor: pointer;
-
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -186,17 +178,6 @@ button:focus-visible {
 
 .form-message:empty {
     display: none;
-}
-
-.account-card .account-switch {
-    margin: 24px 0 0;
-    font-size: 15px;
-    line-height: 1.5;
-}
-
-.account-switch a {
-    color: var(--brand-blue);
-    font-weight: 600;
 }
 
 .account-alternative {

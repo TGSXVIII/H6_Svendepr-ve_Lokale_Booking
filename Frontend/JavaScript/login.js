@@ -2,6 +2,7 @@ const loginForm = document.getElementById("loginForm");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const loginMessage = document.getElementById("loginMessage");
+const submitButton = loginForm.querySelector('button[type="submit"]');
 
 function validateUsername() {
     usernameInput.setCustomValidity(
@@ -70,11 +71,13 @@ loginForm.addEventListener("submit", async (event) => {
         passwordInput.value = "";
 
         window.location.href = "lokaleoversigt.html";
-    } catch (error) {
-    console.error("Fejl under login:", error);
-        loginMessage.textContent =
-        "Login kunne ikke gennemføres. Kontrollér forbindelsen til backend.";
-    } finally {
-        submitButton.disabled = false;
+        } catch (error) {
+            console.error("Fejl under login:", error);
+
+            loginMessage.textContent =
+                "Login kunne ikke gennemføres. Kontrollér forbindelsen til backend.";
+        } finally {
+            submitButton.disabled = false;
+        }
     }
-});
+);

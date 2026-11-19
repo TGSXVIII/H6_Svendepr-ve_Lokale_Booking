@@ -6,6 +6,8 @@
 
     <title>Merc Booking – Lokaleoversigt</title>
 
+    <link rel="preload" href="../../Utilities/Images/Merc_Loading_Logo.png" as="image" fetchpriority="high">
+
     <script src="../JavaScript/theme.js"></script>
 
     <link rel="stylesheet" href="../CSS/shared.css">
@@ -19,6 +21,12 @@
 
 <body class="rooms-page">
     <div id="sharedNavigation"></div>
+    <div
+        id="bookingNotification"
+        class="booking-notification"
+        role="status"
+        aria-live="polite"
+    ></div>
     <main class="rooms-panel">
         <a href="dashboard.html" aria-label="Til forsiden">
             <img
@@ -30,9 +38,6 @@
 
         <h1>Find og book et lokale</h1>
         <p>Vælg et tidspunkt og find et lokale, der passer til dit behov.</p>
-        <p class="demo-notice">
-            Forhåndsvisning med eksempeldata. Bookinger gemmes ikke.
-        </p>
 
         <form id="roomSearchForm" class="room-filters">
             <div class="form-field">
@@ -64,11 +69,16 @@
 
             <div class="form-field">
                 <label for="floor">Etage</label>
-                <select id="floor">
-                    <option value="">Alle etager</option>
-                    <option value="0">Stueetage</option>
-                    <option value="1">1. sal</option>
-                    <option value="2">2. sal</option>
+                <select id="floor" disabled>
+                    <option value="">Henter etager...</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="roomCategory">Lokaletype</label>
+
+                <select id="roomCategory" disabled>
+                    <option value="">Henter lokaletyper...</option>
                 </select>
             </div>
 
@@ -83,16 +93,23 @@
                 <a class="button" href="etageOversigt.html">Se etager og lokalernes placering</a>
             </div>
         </form>
-
+        <div id="roomsLoading" class="brand-loader" aria-hidden="true">
+            <div class="brand-loader-symbol">
+                <img
+                    src="../../Utilities/Images/Merc_Loading_Logo.png"
+                    alt=""
+                    width="80"
+                    height="80"
+                    fetchpriority="high"
+                    loading="eager"
+                >
+            </div>
+        </div>
         <p id="searchMessage" role="status"></p>
         <div class="rooms-grid" id="roomsGrid"></div>
     </main>
-    <dialog
-        id="bookingDialog"
-        class="booking-dialog"
-        aria-labelledby="bookingTitle"
-    >
-        <button id="closeBooking" type="button" aria-label="Luk booking">&times;</button>
+    <dialog id="bookingDialog" class="booking-dialog" aria-labelledby="bookingTitle">
+    <button id="closeBooking" class="menu-close booking-close" type="button" aria-label="Luk booking"> &times;</button>
         <h2 id="bookingTitle">Book lokale</h2>
         <p id="bookingSummary"></p>
 
@@ -101,10 +118,15 @@
                 <label for="bookingPurpose">Formål med bookingen</label>
                 <textarea
                     id="bookingPurpose"
-                    name="purpose"
-                    rows="3"
+                    name="comment"
+                    maxlength="300"
+                    aria-describedby="bookingPurposeCounter"
                     required
                 ></textarea>
+
+                <p id="bookingPurposeCounter" class="character-counter">
+                    0 / 300 tegn
+                </p>
             </div>
 
             <button class="button" type="submit">Send booking</button>

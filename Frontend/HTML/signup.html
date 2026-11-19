@@ -6,6 +6,8 @@
 
     <title>Merc Booking – Opret konto</title>
 
+    <script src="../JavaScript/theme.js"></script>
+
     <link rel="stylesheet" href="../CSS/shared.css">
     <link rel="stylesheet" href="../CSS/account.css">
     <link rel="stylesheet" href="../CSS/signup.css">
@@ -19,8 +21,8 @@
         <a
             class="account-back-arrow"
             href="dashboard.html"
-            aria-label="Tilbage til login og oprettelse"
-            title="Tilbage"
+            aria-label="Til forsiden"
+            title="Til forsiden"
         >
             <span aria-hidden="true">←</span>
         </a>
@@ -45,6 +47,8 @@
                     name="username"
                     autocomplete="username"
                     placeholder="Dit brugernavn"
+                    autocapitalize="none"
+                    spellcheck="false"
                     required
                 >
             </div>
