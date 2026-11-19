@@ -92,7 +92,7 @@ function initializeNavigation() {
 
         try {
             const response = await fetch(
-                "http://localhost:5265/api/auth/CurrentUser",
+                "http://localhost:5265/api/users/CurrentUser",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
