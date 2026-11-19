@@ -159,7 +159,7 @@ public class RoomsController : ControllerBase
     }
 
     // POST: api/rooms/Create
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost("Create")]
     public async Task<IActionResult> Create(RoomCreateDTO roomDTO)
     {
@@ -202,7 +202,7 @@ public class RoomsController : ControllerBase
     }
 
     // PUT: api/rooms/5
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, RoomUpdateDTO roomDTO)
     {
@@ -224,7 +224,7 @@ public class RoomsController : ControllerBase
     }
 
     // DELETE: api/rooms/5
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {

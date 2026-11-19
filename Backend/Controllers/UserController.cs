@@ -161,6 +161,27 @@ public class UsersController : ControllerBase
         return Ok("Brugeren er blevet opdateret.");
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpPut("updateRole/{id}")]
+    public async Task<IActionResult> UpdateRole(int id, Role newRole)
+    {
+        var user = await _context.Users.FindAsync(id);
+
+        if (user == null)
+            return NotFound();
+
+        if (!Enum.TryParse<Role>(newRole.ToString(), true, out var role))
+        {
+            return BadRequest("Invalid role specified.");
+        }
+
+        user.role = newRole;
+
+        await _context.SaveChangesAsync();
+
+        return Ok("Brugerens rolle er blevet opdateret.");
+    }
+
     // PUT: api/users/changepassword/5
     [Authorize]
     [HttpPut("changepassword/{id}")]
