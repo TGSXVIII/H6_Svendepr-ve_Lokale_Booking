@@ -5,10 +5,12 @@ namespace MercBooking.Api.Controllers;
 public class BookingsController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
  
-    public BookingsController(AppDbContext context)
+    public BookingsController(AppDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
  
     // GET: api/Bookings
@@ -185,6 +187,17 @@ public class BookingsController : ControllerBase
  
         _context.Bookings.Add(newBooking);
         await _context.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync(
+            user.Email,
+            "Booking oprettet - MercBooking",
+            $"""
+            <h2>Din booking er blevet oprettet!</h2>
+            <p>Rum: {newBooking.Room.Name}</p>
+            <p>Start: {newBooking.BookingStart}</p>
+            <p>Slut: {newBooking.BookingEnd}</p>
+            """
+        );
  
         return CreatedAtAction(
             nameof(GetById),
@@ -202,18 +215,57 @@ public class BookingsController : ControllerBase
  
         if (booking == null)
             return NotFound();
- 
-        booking.RoomId = dto.RoomId;
-        booking.BookingStart = dto.BookingStart;
-        booking.BookingEnd = dto.BookingEnd;
+        
+        DateTime oldStart = DateTime.MinValue;
+        if(booking.BookingStart != dto.BookingStart && dto.BookingStart != DateTime.MinValue)
+            oldStart = booking.BookingStart;
+
+        DateTime oldEnd = DateTime.MinValue;
+        if(booking.BookingEnd != dto.BookingEnd && dto.BookingEnd != DateTime.MinValue)
+            oldEnd = booking.BookingEnd;
+
+        booking.RoomId = dto.RoomId != 0 ? dto.RoomId : booking.RoomId;
+        booking.BookingStart = dto.BookingStart != DateTime.MinValue ? dto.BookingStart : booking.BookingStart;
+        booking.BookingEnd = dto.BookingEnd != DateTime.MinValue ? dto.BookingEnd : booking.BookingEnd;
         booking.Comment = dto.Comment;
         booking.Status = dto.Status;
         booking.ParticipantCount = dto.ParticipantCount;
         booking.UpdatedAt = DateTime.UtcNow;
  
         await _context.SaveChangesAsync();
- 
-        return NoContent();
+
+        string startChanges = booking.BookingStart.ToString();
+
+        if (oldStart != DateTime.MinValue)
+        {
+            startChanges += $"""
+                <p>Old start time: {oldStart}</p>
+                """;
+        }
+
+        string endChanges = booking.BookingEnd.ToString();
+        if (oldEnd != DateTime.MinValue)
+        {
+            endChanges = $"""
+                <p>Old end time: {oldEnd}</p>
+                <p>New end time: {booking.BookingStart}</p>
+                """;
+        }
+    
+        await _emailService.SendEmailAsync(
+            booking.User.Email,
+            "Booking Opdateret - MercBooking",
+            $"""
+            <h2>Din booking er blevet opdateret</h2>
+            <p>Rum: {booking.Room.Name}</p>
+            <p>Start: </p>
+            <P>{startChanges} </P>
+            <p>Slut: </p>
+            <p>{endChanges} </P>
+            """
+        );
+    
+        return Ok("Booking updated.");
     }
 
     [Authorize]
@@ -230,13 +282,24 @@ public class BookingsController : ControllerBase
         if (!int.TryParse(userIdClaim, out var userId))
             return Unauthorized();
 
-        if (booking.User.Id != userId && !User.IsInRole("Admin"))
+        if (booking.UserId != userId && !User.IsInRole("Admin"))
             return Forbid();
 
         booking.Status = BookingStatus.Cancelled;
         booking.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync(
+            booking.User.Email,
+            "Booking anulleret - MercBooking",
+            $"""
+            <h2>Din booking er blevet aflyst</h2>
+            <p>Rum: {booking.Room.Name}</p>
+            <p>Start: {booking.BookingStart}</p>
+            <p>Slut: {booking.BookingEnd}</p>
+            """
+        );
 
         var waitlistEntry = await _context.WaitlistEntries
             .Where(e => e.RoomId == booking.RoomId &&
@@ -259,6 +322,19 @@ public class BookingsController : ControllerBase
 
             _context.WaitlistOffers.Add(newOffer);
             await _context.SaveChangesAsync();
+
+            await _emailService.SendEmailAsync(
+                waitlistEntry.User.Email,
+                "Nyt venteliste offer - MercBooking",
+                $"""
+                <h2>Du har fået tilbudt en booking!</h2>
+                <p>Et lokale er blevet ledigt, og du har fået tilbuddet.</p>
+                <p>Rum: {booking.Room.Name}</p>
+                <p>Start: {booking.BookingStart}</p>
+                <p>Slut: {booking.BookingEnd}</p>
+                <p>Log ind på MercBooking for at acceptere eller afvise tilbuddet.</p>
+                """
+            );
         }
 
         return NoContent();

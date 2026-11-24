@@ -5,10 +5,12 @@ namespace MercBooking.Api.Controllers;
 public class BookingRequestsController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public BookingRequestsController(AppDbContext context)
+    public BookingRequestsController(AppDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     // GET: api/BookingRequests
@@ -286,6 +288,18 @@ public class BookingRequestsController : ControllerBase
         _context.BookingRequests.Add(newRequest);
         await _context.SaveChangesAsync();
 
+        await _emailService.SendEmailAsync(
+            user.Email,
+            "Booking anmodning oprettet - MercBooking",
+            $"""
+            <h2>Din booking anmodning er blevet oprettet!</h2>
+            <p>Rum: {room.Name}</p>
+            <p>Start: {newRequest.BookedFrom}</p>
+            <p>Slut: {newRequest.BookedTo}</p>
+            <p>Status: Afventer godkendelse</p>
+            """
+        );
+
         return CreatedAtAction(
             nameof(GetById),
             new { id = newRequest.Id },
@@ -298,10 +312,21 @@ public class BookingRequestsController : ControllerBase
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, BookingRequestUpdateDTO dto)
     {
-        var request = await _context.BookingRequests.FindAsync(id);
+        var request = await _context.BookingRequests
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .FirstOrDefaultAsync(r => r.Id == id);
 
         if (request == null)
             return NotFound();
+            
+        DateTime oldStart = DateTime.MinValue;
+        if (request.BookedFrom != dto.BookedFrom && dto.BookedFrom != DateTime.MinValue)
+            oldStart = request.BookedFrom;
+
+        DateTime oldEnd = DateTime.MinValue;
+        if (request.BookedTo != dto.BookedTo && dto.BookedTo != DateTime.MinValue)
+            oldEnd = request.BookedTo;
 
         request.RoomId = dto.RoomId;
         request.BookedFrom = dto.BookedFrom;
@@ -313,6 +338,39 @@ public class BookingRequestsController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        string startChanges = request.BookedFrom.ToString();
+
+        if (oldStart != DateTime.MinValue)
+        {
+            startChanges = $"""
+                <p>Old start time: {oldStart}</p>
+                <p>New start time: {request.BookedFrom}</p>
+                """;
+        }
+
+        string endChanges = request.BookedTo.ToString();
+
+        if (oldEnd != DateTime.MinValue)
+        {
+            endChanges = $"""
+                <p>Old end time: {oldEnd}</p>
+                <p>New end time: {request.BookedTo}</p>
+                """;
+        }
+
+        await _emailService.SendEmailAsync(
+            request.User.Email,
+            "Booking anmodning opdateret - MercBooking",
+            $"""
+            <h2>Din booking anmodning er blevet opdateret</h2>
+            <p>Rum: {request.Room.Name}</p>
+            <p>Start:</p>
+            {startChanges}
+            <p>Slut:</p>
+            {endChanges}
+            """
+        );
+
         return NoContent();
     }
 
@@ -320,7 +378,10 @@ public class BookingRequestsController : ControllerBase
     [HttpPut("review/{id}")]
     public async Task<IActionResult> Review(int id, BookingRequestReviewDTO dto)
     {
-        var request = await _context.BookingRequests.FindAsync(id);
+        var request = await _context.BookingRequests
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .FirstOrDefaultAsync(r => r.Id == id);
 
         if (request == null)
             return NotFound();
@@ -362,6 +423,24 @@ public class BookingRequestsController : ControllerBase
 
             _context.Bookings.Add(newBooking);
             await _context.SaveChangesAsync();
+
+            await _emailService.SendEmailAsync(
+                request.User.Email,
+                dto.Status == RequestStatus.Approved
+                    ? "Booking godkendt - MercBooking"
+                    : "Booking anmodning afvist - MercBooking",
+                $"""
+                <h2>
+                    {(dto.Status == RequestStatus.Approved
+                        ? "Din booking er blevet godkendt!"
+                        : "Din booking anmodning er blevet afvist.")}
+                </h2>
+                <p>Rum: {request.Room.Name}</p>
+                <p>Start: {request.BookedFrom}</p>
+                <p>Slut: {request.BookedTo}</p>
+                <p>Status: {request.Status}</p>
+                """
+            );
         }
 
         return NoContent();
@@ -372,7 +451,10 @@ public class BookingRequestsController : ControllerBase
     [HttpPut("cancelRequest/{id}")]
     public async Task<IActionResult> CancelOwn(int id)
     {
-        var request = await _context.BookingRequests.FindAsync(id);
+        var request = await _context.BookingRequests
+            .Include(r => r.User)
+            .Include(r => r.Room)
+            .FirstOrDefaultAsync(r => r.Id == id);
 
         if (request == null)
             return NotFound();
@@ -392,6 +474,18 @@ public class BookingRequestsController : ControllerBase
         request.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync(
+            request.User.Email,
+            "Booking anmodning annulleret - MercBooking",
+            $"""
+            <h2>Din booking anmodning er blevet annulleret</h2>
+            <p>Rum: {request.Room.Name}</p>
+            <p>Start: {request.BookedFrom}</p>
+            <p>Slut: {request.BookedTo}</p>
+            <p>Status: Annulleret</p>
+            """
+        );
 
         return Ok("Din booking anmodning er blevet annulleret.");
     }

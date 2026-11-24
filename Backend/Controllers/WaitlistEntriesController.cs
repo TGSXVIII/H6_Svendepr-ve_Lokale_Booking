@@ -5,10 +5,12 @@ namespace MercBooking.Api.Controllers;
 public class WaitlistEntriesController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public WaitlistEntriesController(AppDbContext context)
+    public WaitlistEntriesController(AppDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     // GET: api/WaitlistEntries
@@ -144,6 +146,19 @@ public class WaitlistEntriesController : ControllerBase
         _context.WaitlistEntries.Add(newEntry);
         await _context.SaveChangesAsync();
 
+        await _emailService.SendEmailAsync(
+            user.Email,
+            "Venteliste oprettet - MercBooking",
+            $"""
+            <h2>Du er blevet tilføjet til ventelisten</h2>
+            <p>Rum: {room.Name}</p>
+            <p>Start: {newEntry.RequestedStart}</p>
+            <p>Slut: {newEntry.RequestedEnd}</p>
+            <p>Antal deltagere: {newEntry.ParticipantCount}</p>
+            <p>Status: Afventer</p>
+            """
+        );
+
         return CreatedAtAction(
             nameof(GetById),
             new { id = newEntry.Id },
@@ -156,7 +171,10 @@ public class WaitlistEntriesController : ControllerBase
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, WaitlistEntryUpdateDTO dto)
     {
-        var entry = await _context.WaitlistEntries.FindAsync(id);
+        var entry = await _context.WaitlistEntries
+            .Include(w => w.User)
+            .Include(w => w.Room)
+            .FirstOrDefaultAsync(w => w.Id == id);
 
         if (entry == null)
             return NotFound();
@@ -164,19 +182,27 @@ public class WaitlistEntriesController : ControllerBase
         var room = await _context.Rooms.FindAsync(dto.RoomId);
         if (room == null)
             return BadRequest("Room does not exist.");
-        
-        int actualUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-        string userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)!.Value;
+
+        int actualUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        string userRole = User.FindFirst(ClaimTypes.Role)!.Value;
 
         if (entry.UserId != actualUserId && userRole != "admin")
         {
             return Forbid("You are not authorized to update this waitlist entry.");
         }
 
-        entry.RoomId = dto.RoomId;
+        DateTime oldStart = DateTime.MinValue;
+        if (entry.RequestedStart != dto.RequestedStart && dto.RequestedStart != DateTime.MinValue)
+            oldStart = entry.RequestedStart;
+
+        DateTime oldEnd = DateTime.MinValue;
+        if (entry.RequestedEnd != dto.RequestedEnd && dto.RequestedEnd != DateTime.MinValue)
+            oldEnd = entry.RequestedEnd;
+
+        entry.RoomId = dto.RoomId != 0 ? dto.RoomId : entry.RoomId;
         entry.Room = room;
-        entry.RequestedStart = dto.RequestedStart;
-        entry.RequestedEnd = dto.RequestedEnd;
+        entry.RequestedStart = dto.RequestedStart != DateTime.MinValue ? dto.RequestedStart : entry.RequestedStart;
+        entry.RequestedEnd = dto.RequestedEnd != DateTime.MinValue ? dto.RequestedEnd : entry.RequestedEnd;
         entry.Comment = dto.Comment;
         entry.ParticipantCount = dto.ParticipantCount;
         entry.status = dto.Status;
@@ -184,7 +210,40 @@ public class WaitlistEntriesController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        string startChanges = entry.RequestedStart.ToString();
+
+        if (oldStart != DateTime.MinValue)
+        {
+            startChanges = $"""
+                <p>Old start time: {oldStart}</p>
+                <p>New start time: {entry.RequestedStart}</p>
+                """;
+        }
+
+        string endChanges = entry.RequestedEnd.ToString();
+
+        if (oldEnd != DateTime.MinValue)
+        {
+            endChanges = $"""
+                <p>Old end time: {oldEnd}</p>
+                <p>New end time: {entry.RequestedEnd}</p>
+                """;
+        }
+
+        await _emailService.SendEmailAsync(
+            entry.User.Email,
+            "Venteliste opdateret - MercBooking",
+            $"""
+            <h2>Din venteliste er blevet opdateret</h2>
+            <p>Rum: {entry.Room.Name}</p>
+            <p>Start:</p>
+            {startChanges}
+            <p>Slut:</p>
+            {endChanges}
+            """
+        );
+
+        return Ok("Waitlist entry updated.");
     }
 
     [Authorize(Roles = "Teacher,Admin")]
@@ -200,6 +259,18 @@ public class WaitlistEntriesController : ControllerBase
         entry.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync(
+            entry.User.Email,
+            "Venteliste annulleret - MercBooking",
+            $"""
+            <h2>Din venteliste er blevet annulleret</h2>
+            <p>Rum: {entry.Room.Name}</p>
+            <p>Start: {entry.RequestedStart}</p>
+            <p>Slut: {entry.RequestedEnd}</p>
+            <p>Status: Annulleret</p>
+            """
+        );
 
         return NoContent();
     }
