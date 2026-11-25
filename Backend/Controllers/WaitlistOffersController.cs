@@ -238,8 +238,8 @@ public class WaitlistOffersController : ControllerBase
             $"""
             <h2>Du har modtaget et tilbud på en booking!</h2>
             <p>Rum: {newOffer.Booking.Room.Name}</p>
-            <p>Start: {newOffer.Booking.BookingStart}</p>
-            <p>Slut: {newOffer.Booking.BookingEnd}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(newOffer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(newOffer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
             <p>Du kan nu acceptere eller afvise tilbuddet i MercBooking.</p>
             <p>Status: Afventer svar</p>
             """
@@ -356,8 +356,8 @@ public class WaitlistOffersController : ControllerBase
                 $"""
                 <h2>Dit venteliste tilbud er blevet godkendt!</h2>
                 <p>Rum: {offer.Booking.Room.Name}</p>
-                <p>Start: {offer.Booking.BookingStart}</p>
-                <p>Slut: {offer.Booking.BookingEnd}</p>
+                <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+                <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
                 <p>Status: Godkendt</p>
                 """
             );
@@ -370,8 +370,8 @@ public class WaitlistOffersController : ControllerBase
                 $"""
                 <h2>Du har afvist venteliste tilbuddet</h2>
                 <p>Rum: {offer.Booking.Room.Name}</p>
-                <p>Start: {offer.Booking.BookingStart}</p>
-                <p>Slut: {offer.Booking.BookingEnd}</p>
+                <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+                <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
                 <p>Status: Afvist</p>
                 """
             );
@@ -404,8 +404,8 @@ public class WaitlistOffersController : ControllerBase
                     $"""
                     <h2>Du har modtaget et nyt tilbud på en booking!</h2>
                     <p>Rum: {offer.Booking.Room.Name}</p>
-                    <p>Start: {offer.Booking.BookingStart}</p>
-                    <p>Slut: {offer.Booking.BookingEnd}</p>
+                    <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+                    <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
                     <p>Du kan nu acceptere eller afvise tilbuddet i MercBooking.</p>
                     <p>Status: Afventer svar</p>
                     """
@@ -451,8 +451,8 @@ public class WaitlistOffersController : ControllerBase
             $"""
             <h2>Dit venteliste tilbud er blevet opdateret</h2>
             <p>Rum: {offer.Booking.Room.Name}</p>
-            <p>Start: {offer.Booking.BookingStart}</p>
-            <p>Slut: {offer.Booking.BookingEnd}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
             <p>Status: {offer.Status}</p>
             """
         );

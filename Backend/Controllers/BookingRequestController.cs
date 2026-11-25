@@ -294,8 +294,8 @@ public class BookingRequestsController : ControllerBase
             $"""
             <h2>Din booking anmodning er blevet oprettet!</h2>
             <p>Rum: {room.Name}</p>
-            <p>Start: {newRequest.BookedFrom}</p>
-            <p>Slut: {newRequest.BookedTo}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(newRequest.BookedFrom, TimeZoneInfo.Local)}</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(newRequest.BookedTo, TimeZoneInfo.Local)}</p>
             <p>Status: Afventer godkendelse</p>
             """
         );
@@ -343,8 +343,8 @@ public class BookingRequestsController : ControllerBase
         if (oldStart != DateTime.MinValue)
         {
             startChanges = $"""
-                <p>Old start time: {oldStart}</p>
-                <p>New start time: {request.BookedFrom}</p>
+                <p>Old start time: {TimeZoneInfo.ConvertTimeFromUtc(oldStart, TimeZoneInfo.Local)}</p>
+                <p>New start time: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedFrom, TimeZoneInfo.Local)}</p>
                 """;
         }
 
@@ -353,8 +353,8 @@ public class BookingRequestsController : ControllerBase
         if (oldEnd != DateTime.MinValue)
         {
             endChanges = $"""
-                <p>Old end time: {oldEnd}</p>
-                <p>New end time: {request.BookedTo}</p>
+                <p>Old end time: {TimeZoneInfo.ConvertTimeFromUtc(oldEnd, TimeZoneInfo.Local)}</p>
+                <p>New end time: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedTo, TimeZoneInfo.Local)}</p>
                 """;
         }
 
@@ -436,8 +436,8 @@ public class BookingRequestsController : ControllerBase
                         : "Din booking anmodning er blevet afvist.")}
                 </h2>
                 <p>Rum: {request.Room.Name}</p>
-                <p>Start: {request.BookedFrom}</p>
-                <p>Slut: {request.BookedTo}</p>
+                <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedFrom, TimeZoneInfo.Local)}</p>
+                <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedTo, TimeZoneInfo.Local)}</p>
                 <p>Status: {request.Status}</p>
                 """
             );
@@ -481,8 +481,8 @@ public class BookingRequestsController : ControllerBase
             $"""
             <h2>Din booking anmodning er blevet annulleret</h2>
             <p>Rum: {request.Room.Name}</p>
-            <p>Start: {request.BookedFrom}</p>
-            <p>Slut: {request.BookedTo}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedFrom, TimeZoneInfo.Local)}</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedTo, TimeZoneInfo.Local)}</p>
             <p>Status: Annulleret</p>
             """
         );

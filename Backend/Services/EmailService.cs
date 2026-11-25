@@ -32,11 +32,11 @@ public class EmailService : IEmailService
         }.ToMessageBody();
 
         //for use
-        //using var client = new SmtpClient();
+        using var client = new SmtpClient();
 
         //for testing
-        using var protocolLogger = new ProtocolLogger("smtp-log.txt");
-        using var client = new SmtpClient(protocolLogger);
+        //using var protocolLogger = new ProtocolLogger("smtp-log.txt");
+        //using var client = new SmtpClient(protocolLogger);
 
 
         var host = _configuration["EmailSettings:Host"];
@@ -62,11 +62,18 @@ public class EmailService : IEmailService
         await client.ConnectAsync(
             host,
             int.Parse(port),
-            SecureSocketOptions.StartTls
+            SecureSocketOptions.SslOnConnect
         );
 
-        await client.AuthenticateAsync(username, password);
-        await client.SendAsync(new SmtpSendRequest(message));
-        await client.DisconnectAsync(true);
+        try
+        {
+            await client.AuthenticateAsync(username, password);
+            await client.SendAsync(new SmtpSendRequest(message));
+        }
+        finally
+        {
+            if (client.IsConnected)
+                await client.DisconnectAsync(true);
+        }
     }
 }

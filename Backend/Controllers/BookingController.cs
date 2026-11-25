@@ -194,8 +194,8 @@ public class BookingsController : ControllerBase
             $"""
             <h2>Din booking er blevet oprettet!</h2>
             <p>Rum: {newBooking.Room.Name}</p>
-            <p>Start: {newBooking.BookingStart}</p>
-            <p>Slut: {newBooking.BookingEnd}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(newBooking.BookingStart, TimeZoneInfo.Local)}</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(newBooking.BookingEnd, TimeZoneInfo.Local)}</p>
             """
         );
  
@@ -239,7 +239,8 @@ public class BookingsController : ControllerBase
         if (oldStart != DateTime.MinValue)
         {
             startChanges += $"""
-                <p>Old start time: {oldStart}</p>
+                <p>Old start time: {TimeZoneInfo.ConvertTimeFromUtc(oldStart, TimeZoneInfo.Local)}</p>
+                <p>New start time: {TimeZoneInfo.ConvertTimeFromUtc(booking.BookingStart, TimeZoneInfo.Local)}</p>
                 """;
         }
 
@@ -247,8 +248,8 @@ public class BookingsController : ControllerBase
         if (oldEnd != DateTime.MinValue)
         {
             endChanges = $"""
-                <p>Old end time: {oldEnd}</p>
-                <p>New end time: {booking.BookingStart}</p>
+                <p>Old end time: {TimeZoneInfo.ConvertTimeFromUtc(oldEnd, TimeZoneInfo.Local)}</p>
+                <p>New end time: {TimeZoneInfo.ConvertTimeFromUtc(booking.BookingEnd, TimeZoneInfo.Local)}</p>
                 """;
         }
     
@@ -296,8 +297,8 @@ public class BookingsController : ControllerBase
             $"""
             <h2>Din booking er blevet aflyst</h2>
             <p>Rum: {booking.Room.Name}</p>
-            <p>Start: {booking.BookingStart}</p>
-            <p>Slut: {booking.BookingEnd}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(booking.BookingStart, TimeZoneInfo.Local)}</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(booking.BookingEnd, TimeZoneInfo.Local)}</p>
             """
         );
 
@@ -330,8 +331,8 @@ public class BookingsController : ControllerBase
                 <h2>Du har fået tilbudt en booking!</h2>
                 <p>Et lokale er blevet ledigt, og du har fået tilbuddet.</p>
                 <p>Rum: {booking.Room.Name}</p>
-                <p>Start: {booking.BookingStart}</p>
-                <p>Slut: {booking.BookingEnd}</p>
+                <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(booking.BookingStart, TimeZoneInfo.Local)}</p>
+                <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(booking.BookingEnd, TimeZoneInfo.Local)}</p>
                 <p>Log ind på MercBooking for at acceptere eller afvise tilbuddet.</p>
                 """
             );

@@ -152,8 +152,8 @@ public class WaitlistEntriesController : ControllerBase
             $"""
             <h2>Du er blevet tilføjet til ventelisten</h2>
             <p>Rum: {room.Name}</p>
-            <p>Start: {newEntry.RequestedStart}</p>
-            <p>Slut: {newEntry.RequestedEnd}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(newEntry.RequestedStart, TimeZoneInfo.Local)}</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(newEntry.RequestedEnd, TimeZoneInfo.Local)}</p>
             <p>Antal deltagere: {newEntry.ParticipantCount}</p>
             <p>Status: Afventer</p>
             """
@@ -215,8 +215,8 @@ public class WaitlistEntriesController : ControllerBase
         if (oldStart != DateTime.MinValue)
         {
             startChanges = $"""
-                <p>Old start time: {oldStart}</p>
-                <p>New start time: {entry.RequestedStart}</p>
+                <p>Old start time: {TimeZoneInfo.ConvertTimeFromUtc(oldStart, TimeZoneInfo.Local)}</p>
+                <p>New start time: {TimeZoneInfo.ConvertTimeFromUtc(entry.RequestedStart, TimeZoneInfo.Local)}</p>
                 """;
         }
 
@@ -225,8 +225,8 @@ public class WaitlistEntriesController : ControllerBase
         if (oldEnd != DateTime.MinValue)
         {
             endChanges = $"""
-                <p>Old end time: {oldEnd}</p>
-                <p>New end time: {entry.RequestedEnd}</p>
+                <p>Old end time: {TimeZoneInfo.ConvertTimeFromUtc(oldEnd, TimeZoneInfo.Local)}</p>
+                <p>New end time: {TimeZoneInfo.ConvertTimeFromUtc(entry.RequestedEnd, TimeZoneInfo.Local)}</p>
                 """;
         }
 
@@ -266,8 +266,8 @@ public class WaitlistEntriesController : ControllerBase
             $"""
             <h2>Din venteliste er blevet annulleret</h2>
             <p>Rum: {entry.Room.Name}</p>
-            <p>Start: {entry.RequestedStart}</p>
-            <p>Slut: {entry.RequestedEnd}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(entry.RequestedStart, TimeZoneInfo.Local)}</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(entry.RequestedEnd, TimeZoneInfo.Local)}</p>
             <p>Status: Annulleret</p>
             """
         );
