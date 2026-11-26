@@ -7,5 +7,5 @@ public class BookingUpdateDTO
     public DateTime BookingEnd { get; set; } = DateTime.MinValue;
     public string Comment { get; set; } = string.Empty;
     public BookingStatus Status { get; set; }
-    public int ParticipantCount { get; set; }
+    public int ParticipantCount { get; set; } = 0;
 }

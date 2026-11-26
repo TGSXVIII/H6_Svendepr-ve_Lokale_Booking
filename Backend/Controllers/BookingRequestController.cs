@@ -328,7 +328,7 @@ public class BookingRequestsController : ControllerBase
         if (request.BookedTo != dto.BookedTo && dto.BookedTo != DateTime.MinValue)
             oldEnd = request.BookedTo;
 
-        request.RoomId = dto.RoomId;
+        request.RoomId = dto.RoomId != 0 ? dto.RoomId : request.RoomId;
         request.BookedFrom = dto.BookedFrom;
         request.BookedTo = dto.BookedTo;
         request.Comment = dto.Comment;
@@ -423,25 +423,26 @@ public class BookingRequestsController : ControllerBase
 
             _context.Bookings.Add(newBooking);
             await _context.SaveChangesAsync();
-
-            await _emailService.SendEmailAsync(
-                request.User.Email,
-                dto.Status == RequestStatus.Approved
-                    ? "Booking godkendt - MercBooking"
-                    : "Booking anmodning afvist - MercBooking",
-                $"""
-                <h2>
-                    {(dto.Status == RequestStatus.Approved
-                        ? "Din booking er blevet godkendt!"
-                        : "Din booking anmodning er blevet afvist.")}
-                </h2>
-                <p>Rum: {request.Room.Name}</p>
-                <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedFrom, TimeZoneInfo.Local)}</p>
-                <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedTo, TimeZoneInfo.Local)}</p>
-                <p>Status: {request.Status}</p>
-                """
-            );
         }
+
+        await _emailService.SendEmailAsync(
+            request.User.Email,
+            dto.Status == RequestStatus.Approved
+                ? "Booking godkendt - MercBooking"
+                : "Booking anmodning afvist - MercBooking",
+            $"""
+            <h2>
+                {(dto.Status == RequestStatus.Approved
+                    ? "Din booking er blevet godkendt!"
+                    : "Din booking anmodning er blevet afvist.")}
+            </h2>
+            <p>Rum: {request.Room.Name}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedFrom, TimeZoneInfo.Local)}</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(request.BookedTo, TimeZoneInfo.Local)}</p>
+            <p>Status: {request.Status}</p>
+            """
+        );
+        
 
         return NoContent();
     }

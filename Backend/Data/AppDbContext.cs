@@ -19,6 +19,14 @@ public class AppDbContext : DbContext
             .HasOne(re => re.Equipment)
             .WithMany(e => e.RoomEquipment)
             .HasForeignKey(re => re.EquipmentId);
+
+        modelBuilder.Entity<Users>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+        
+        modelBuilder.Entity<Users>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
     }
     public DbSet<Users> Users { get; set; }
     public DbSet<Rooms> Rooms { get; set; }

@@ -1,4 +1,3 @@
-using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -16,12 +15,16 @@ public class EmailService : IEmailService
 
     public async Task SendEmailAsync(string to, string subject, string body)
     {
+        if(to == string.Empty || to == null)
+            return;
+        
         var message = new MimeMessage();
 
         message.From.Add(new MailboxAddress(
             _configuration["EmailSettings:FromName"],
             _configuration["EmailSettings:FromEmail"]
         ));
+
 
         message.To.Add(MailboxAddress.Parse(to));
         message.Subject = subject;

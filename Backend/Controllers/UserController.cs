@@ -4,11 +4,13 @@ public class UsersController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly PasswordHasher<Users> _passwordHasher;
+    private readonly IEmailService _emailService;
 
-    public UsersController(AppDbContext context)
+    public UsersController(AppDbContext context, IEmailService emailService)
     {
         _context = context;
         _passwordHasher = new PasswordHasher<Users>();
+        _emailService = emailService;
     }
 
     // GET: api/users
@@ -108,6 +110,13 @@ public class UsersController : ControllerBase
     [HttpPost("Register")]
     public async Task<IActionResult> Create(UserCreateDTO userDTO)
     {
+        if (await _context.Users.AnyAsync(u =>
+            u.Username == userDTO.Username ||
+            u.Email == userDTO.Email))
+        {
+            return BadRequest("Brugernavn eller email er allerede i brug.");
+        }
+
         Users newUser = new Users
         {
             Username = userDTO.Username,
@@ -139,9 +148,8 @@ public class UsersController : ControllerBase
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, UserUpdateDTO updatedUser)
     {
-        var request = await _context.BookingRequests.FindAsync(id);
-
-        if (request == null)
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
             return NotFound();
 
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -150,17 +158,18 @@ public class UsersController : ControllerBase
             return Unauthorized();
         }
 
-        if (request.UserId != userId && !User.IsInRole("Admin"))
+        if (user.Id != userId && !User.IsInRole("Admin"))
         {
-            return Forbid("Du kan ikke ændre andre brugers oplysninger.");
+            return StatusCode(403, "Du kan ikke ændre andre brugers oplysninger.");
         }
 
-        var user = await _context.Users.FindAsync(id);
-
-        
-
-        if (user == null)
-            return NotFound();
+        if (await _context.Users.AnyAsync(u =>
+            u.Id != id &&
+            (u.Username == updatedUser.Username ||
+            u.Email == updatedUser.Email)))
+        {
+            return BadRequest("Brugernavn eller email er allerede i brug.");
+        }
 
         user.LastEditedById = userId;
         user.Username = updatedUser.Username;
@@ -180,7 +189,7 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound();
 
-        if (!Enum.TryParse<Role>(newRole.ToString(), true, out var role))
+        if (!Enum.IsDefined(typeof(Role), newRole))
         {
             return BadRequest("Invalid role specified.");
         }
@@ -201,34 +210,87 @@ public class UsersController : ControllerBase
     // PUT: api/users/changepassword/5
     [Authorize]
     [HttpPut("changepassword/{id}")]
-    public async Task<IActionResult> ChangePassword(int id, String newPassword)
+    public async Task<IActionResult> ChangePassword(int id, UserChangePassDTO dto)
     {
-        var request = await _context.BookingRequests.FindAsync(id);
+        var user = await _context.Users.FindAsync(id);
 
-        if (request == null)
+        if (user == null)
             return NotFound();
-
+        
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!int.TryParse(userIdClaim, out var userId))
         {
             return Unauthorized();
         }
 
-        if (request.UserId != userId && !User.IsInRole("Admin"))
+        if (user.Id != userId && !User.IsInRole("Admin"))
         {
-            return Forbid("Du kan ikke ændre andre brugers adgangskoder.");
+            return StatusCode(403, "Du kan ikke ændre andre brugers oplysninger.");
         }
+
+
+        if (!User.IsInRole("Admin"))
+        {
+            var result = _passwordHasher.VerifyHashedPassword(
+                user,
+                user.Password,
+                dto.OldPassword
+            );
+
+            if (result == PasswordVerificationResult.Failed)
+                return BadRequest("Den gamle adgangskode er forkert.");
+        }
+
+        user.Password = _passwordHasher.HashPassword(user, dto.NewPassword);
+
+        await _context.SaveChangesAsync();
+
+        return Ok("Adgangskoden er blevet ændret.");
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("ResetPassword/{id}")]
+    public async Task<IActionResult> ResetPassword(int id)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
 
         var user = await _context.Users.FindAsync(id);
 
         if (user == null)
             return NotFound();
 
-        user.Password = _passwordHasher.HashPassword(user, newPassword);
+        // Generate a random temporary password
+        const string characters = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz1234567890!@#$%";
+        var random = new Random();
+        var temporaryPassword = new string(
+            Enumerable.Range(0, 16)
+                .Select(_ => characters[random.Next(characters.Length)])
+                .ToArray()
+        );
+
+        // Hash the password
+        user.Password = _passwordHasher.HashPassword(user, temporaryPassword);
+        user.LastEditedById = userId;
 
         await _context.SaveChangesAsync();
 
-        return Ok("Adgangskoden er blevet ændret.");
+        // Send email
+        await _emailService.SendEmailAsync(
+            user.Email,
+            "MercBooking - Nulstilling af adgangskode",
+            $"""
+            <h2>Din adgangskode er blevet nulstillet</h2>
+            <p>En administrator har nulstillet din adgangskode.</p>
+            <p>Din nye adgangskode er:</p>
+            <h3>{temporaryPassword}</h3>
+            <p>Du bedes ændre din adgangskode ved næste login.</p>
+            <p>Med venlig hilsen<br>MercBooking</p>
+            """
+        );
+
+        return Ok("En mail er blevet sendt til brugeren.");
     }
 
     // DELETE: api/users/5
@@ -236,10 +298,6 @@ public class UsersController : ControllerBase
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var request = await _context.BookingRequests.FindAsync(id);
-
-        if (request == null)
-            return NotFound();
 
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!int.TryParse(userIdClaim, out var userId))
@@ -247,15 +305,16 @@ public class UsersController : ControllerBase
             return Unauthorized();
         }
 
-        if (request.UserId != userId && !User.IsInRole("Admin"))
-        {
-            return Forbid("Du kan ikke slette andre brugere.");
-        }
-
         var user = await _context.Users.FindAsync(id);
 
         if (user == null)
             return NotFound();
+
+        if (user.Id != userId && !User.IsInRole("Admin"))
+        {
+            return StatusCode(403, "Du kan ikke slette andre brugere.");
+        }
+
 
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
