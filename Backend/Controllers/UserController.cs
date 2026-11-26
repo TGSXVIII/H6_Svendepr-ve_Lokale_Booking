@@ -142,7 +142,7 @@ public class UsersController : ControllerBase
         var user = await _context.Users.FindAsync(id);
         if (user == null)
             return NotFound();
-        
+
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!int.TryParse(userIdClaim, out var userId))
         {
