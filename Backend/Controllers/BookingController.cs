@@ -227,9 +227,9 @@ public class BookingsController : ControllerBase
         booking.RoomId = dto.RoomId != 0 ? dto.RoomId : booking.RoomId;
         booking.BookingStart = dto.BookingStart != DateTime.MinValue ? dto.BookingStart : booking.BookingStart;
         booking.BookingEnd = dto.BookingEnd != DateTime.MinValue ? dto.BookingEnd : booking.BookingEnd;
-        booking.Comment = dto.Comment;
+        booking.Comment = dto.Comment != string.Empty ? dto.Comment : booking.Comment;
         booking.Status = dto.Status;
-        booking.ParticipantCount = dto.ParticipantCount;
+        booking.ParticipantCount = dto.ParticipantCount != 0 ? dto.ParticipantCount : booking.ParticipantCount;
         booking.UpdatedAt = DateTime.UtcNow;
  
         await _context.SaveChangesAsync();
