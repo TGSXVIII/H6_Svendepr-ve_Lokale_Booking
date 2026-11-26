@@ -1,3 +1,5 @@
+using MailKit;
+
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -5,14 +7,40 @@ public class AuthController : ControllerBase
     private readonly AppDbContext _context;
     private readonly PasswordHasher<Users> _passwordHasher;
     private readonly IConfiguration _configuration;
+    private readonly IEmailService _emailService;
  
     public AuthController(
         AppDbContext context,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IEmailService emailService)
     {
         _context = context;
         _configuration = configuration;
         _passwordHasher = new PasswordHasher<Users>();
+        _emailService = emailService;
+    }
+
+    [Authorize]
+    [HttpPost("mailtest")]
+    public async Task<IActionResult> MailTest()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+        var user = await _context.Users.FindAsync(userId);
+
+        if (user == null)
+            return NotFound();
+
+        await _emailService.SendEmailAsync(
+            user.Email,
+            "Test email",
+            "<h2>Hello from MercBooking!</h2>"
+        );
+
+        return Ok("Test email sent!");
     }
  
     // POST: api/auth/login

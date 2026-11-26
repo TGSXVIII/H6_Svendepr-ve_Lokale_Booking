@@ -1,6 +1,8 @@
 using Microsoft.OpenApi;
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -26,6 +28,8 @@ var connectionString = builder.Configuration
     .GetConnectionString("MercBookingDb")
     ?? throw new InvalidOperationException(
         "Databaseforbindelsen MercBookingDb mangler.");
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));

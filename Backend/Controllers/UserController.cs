@@ -21,7 +21,14 @@ public class UsersController : ControllerBase
                 Id = u.Id,
                 Username = u.Username,
                 Email = u.Email,
-                Role = u.role.ToString()
+                Role = u.role.ToString(),
+                LastEditedBy = u.LastEditedBy == null ? null : new UserGetDTO
+                {
+                    Id = u.LastEditedBy.Id,
+                    Username = u.LastEditedBy.Username,
+                    Email = u.LastEditedBy.Email,
+                    Role = u.LastEditedBy.role.ToString()
+                }
             }).ToListAsync();
         return Ok(users);
     }
@@ -150,9 +157,12 @@ public class UsersController : ControllerBase
 
         var user = await _context.Users.FindAsync(id);
 
+        
+
         if (user == null)
             return NotFound();
 
+        user.LastEditedById = userId;
         user.Username = updatedUser.Username;
         user.Email = updatedUser.Email;
 
@@ -175,6 +185,12 @@ public class UsersController : ControllerBase
             return BadRequest("Invalid role specified.");
         }
 
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+        user.LastEditedById = userId;
         user.role = newRole;
 
         await _context.SaveChangesAsync();
