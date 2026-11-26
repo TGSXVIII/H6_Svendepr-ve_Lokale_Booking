@@ -7,5 +7,7 @@ public class Users
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public Role role { get; set; }
+    public int? LastEditedById { get; set; }
+    public Users? LastEditedBy { get; set; }
 }
 public enum Role { Student, Teacher, Admin }

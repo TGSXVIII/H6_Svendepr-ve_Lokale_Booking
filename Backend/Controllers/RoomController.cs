@@ -9,7 +9,7 @@ public class RoomsController : ControllerBase
         _context = context;
     }
 
-    // GET: api/rooms
+    // GET: api/rooms/getAll
     [Authorize(Roles = "Admin")]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetAll()
@@ -24,6 +24,13 @@ public class RoomsController : ControllerBase
                 number = r.number,
                 Capacity = r.Capacity,
                 isActive = r.isActive,
+                LastEditedBy = r.LastEditedBy == null ? null : new UserGetDTO
+                {
+                    Id = r.LastEditedBy.Id,
+                    Username = r.LastEditedBy.Username,
+                    Email = r.LastEditedBy.Email,
+                    Role = r.LastEditedBy.role.ToString()
+                },
                 Category = new CategoryGetDTO
                 {
                     Id = r.Category.Id,
@@ -169,8 +176,15 @@ public class RoomsController : ControllerBase
         if (category == null)
             return BadRequest("Category does not exist.");
 
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+
         Rooms newRoom = new Rooms
         {
+            LastEditedById = userId,
             Name = roomDTO.Name,
             floor = roomDTO.floor,
             number = roomDTO.number,
@@ -208,9 +222,16 @@ public class RoomsController : ControllerBase
     {
         var room = await _context.Rooms.FindAsync(id);
 
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+
         if (room == null)
             return NotFound();
 
+        room.LastEditedById = userId;
         room.Name = roomDTO.Name;
         room.floor = roomDTO.floor;
         room.number = roomDTO.number;

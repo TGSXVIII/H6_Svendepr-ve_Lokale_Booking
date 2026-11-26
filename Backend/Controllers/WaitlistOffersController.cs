@@ -5,10 +5,12 @@ namespace MercBooking.Api.Controllers;
 public class WaitlistOffersController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IEmailService _emailService;
 
-    public WaitlistOffersController(AppDbContext context)
+    public WaitlistOffersController(AppDbContext context, IEmailService emailService)
     {
         _context = context;
+        _emailService = emailService;
     }
 
     [Authorize(Roles = "Teacher,Admin")]
@@ -198,24 +200,30 @@ public class WaitlistOffersController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> Create(WaitlistOfferCreateDTO dto)
     {
-        var waitlistEntryExists = await _context.WaitlistEntries
-            .AnyAsync(w => w.Id == dto.WaitlistEntryId);
-
-        if (!waitlistEntryExists)
+        var waitlistEntry = await _context.WaitlistEntries
+            .Include(w => w.User)
+            .Include(w => w.Room)
+                .ThenInclude(r => r.Category)
+            .FirstOrDefaultAsync(w => w.Id == dto.WaitlistEntryId);
+        
+        if (waitlistEntry == null)
             return BadRequest("Waitlist entry does not exist.");
-
-        var bookingExists = await _context.Bookings
-            .AnyAsync(b => b.Id == dto.BookingId);
-
-        if (!bookingExists)
+        
+        var booking = await _context.Bookings
+            .Include(b => b.User)
+            .Include(b => b.Room)
+                .ThenInclude(r => r.Category)
+            .FirstOrDefaultAsync(b => b.Id == dto.BookingId);
+        
+        if (booking == null)
             return BadRequest("Booking does not exist.");
-
+        
         var newOffer = new WaitlistOffers
         {
             WaitlistEntryId = dto.WaitlistEntryId,
-            WaitlistEntry = await _context.WaitlistEntries.FindAsync(dto.WaitlistEntryId) ?? new WaitlistEntries(),
+            WaitlistEntry = waitlistEntry,
             BookingId = dto.BookingId,
-            Booking = await _context.Bookings.FindAsync(dto.BookingId) ?? new Bookings(),
+            Booking = booking,
             Status = OfferStatus.Pending,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -223,6 +231,19 @@ public class WaitlistOffersController : ControllerBase
 
         _context.WaitlistOffers.Add(newOffer);
         await _context.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync(
+            newOffer.WaitlistEntry.User.Email,
+            "Venteliste tilbud - MercBooking",
+            $"""
+            <h2>Du har modtaget et tilbud på en booking!</h2>
+            <p>Rum: {newOffer.Booking.Room.Name}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(newOffer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(newOffer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
+            <p>Du kan nu acceptere eller afvise tilbuddet i MercBooking.</p>
+            <p>Status: Afventer svar</p>
+            """
+        );
 
         var result = new WaitlistOfferGetDTO
         {
@@ -303,7 +324,12 @@ public class WaitlistOffersController : ControllerBase
     [HttpPut("AnswerOffer/{id}")]
     public async Task<IActionResult> AnswerOffer(int id, OfferStatus answer)
     {
-        var offer = await _context.WaitlistOffers.FindAsync(id);
+        var offer = await _context.WaitlistOffers
+            .Include(o => o.WaitlistEntry)
+                .ThenInclude(w => w.User)
+            .Include(o => o.Booking)
+                .ThenInclude(b => b.Room)
+            .FirstOrDefaultAsync(o => o.Id == id);
 
         if (offer == null)
             return NotFound();
@@ -323,9 +349,33 @@ public class WaitlistOffersController : ControllerBase
                 booking.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
+
+            await _emailService.SendEmailAsync(
+                offer.WaitlistEntry.User.Email,
+                "Venteliste tilbud godkendt - MercBooking",
+                $"""
+                <h2>Dit venteliste tilbud er blevet godkendt!</h2>
+                <p>Rum: {offer.Booking.Room.Name}</p>
+                <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+                <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
+                <p>Status: Godkendt</p>
+                """
+            );
         }
         else if (answer == OfferStatus.Rejected)
         {
+            await _emailService.SendEmailAsync(
+                offer.WaitlistEntry.User.Email,
+                "Venteliste tilbud afvist - MercBooking",
+                $"""
+                <h2>Du har afvist venteliste tilbuddet</h2>
+                <p>Rum: {offer.Booking.Room.Name}</p>
+                <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+                <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
+                <p>Status: Afvist</p>
+                """
+            );
+
             var waitlistEntry = await _context.WaitlistEntries
                 .Where(e => e.RoomId == offer.Booking.RoomId &&
                     e.RequestedStart < offer.Booking.BookingEnd &&
@@ -347,6 +397,19 @@ public class WaitlistOffersController : ControllerBase
 
                 _context.WaitlistOffers.Add(newOffer);
                 await _context.SaveChangesAsync();
+
+                await _emailService.SendEmailAsync(
+                    newOffer.WaitlistEntry.User.Email,
+                    "Nyt venteliste tilbud - MercBooking",
+                    $"""
+                    <h2>Du har modtaget et nyt tilbud på en booking!</h2>
+                    <p>Rum: {offer.Booking.Room.Name}</p>
+                    <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+                    <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
+                    <p>Du kan nu acceptere eller afvise tilbuddet i MercBooking.</p>
+                    <p>Status: Afventer svar</p>
+                    """
+                );
             }
         }
 
@@ -381,6 +444,18 @@ public class WaitlistOffersController : ControllerBase
         offer.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+
+        await _emailService.SendEmailAsync(
+            offer.WaitlistEntry.User.Email,
+            "Venteliste tilbud opdateret - MercBooking",
+            $"""
+            <h2>Dit venteliste tilbud er blevet opdateret</h2>
+            <p>Rum: {offer.Booking.Room.Name}</p>
+            <p>Start: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingStart, TimeZoneInfo.Local) }</p>
+            <p>Slut: {TimeZoneInfo.ConvertTimeFromUtc(offer.Booking.BookingEnd, TimeZoneInfo.Local)}</p>
+            <p>Status: {offer.Status}</p>
+            """
+        );
 
         return NoContent();
     }

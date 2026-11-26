@@ -9,6 +9,9 @@ public class Rooms
     public int Capacity { get; set; }
     public bool isActive { get; set; } = true;
 
+    public int? LastEditedById { get; set; }
+    public Users? LastEditedBy { get; set; }
+
     public int CategoryId { get; set; }
     public Categories Category { get; set; } = new Categories();
     

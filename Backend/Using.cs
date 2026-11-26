@@ -10,3 +10,4 @@ global using MercBooking.Api.Models;
 global using System.Security.Claims;
 global using MercBooking.Api.Data;
 global using System.Text;
+global using MercBooking.Api.Services;
