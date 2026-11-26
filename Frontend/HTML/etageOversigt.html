@@ -7,11 +7,17 @@
     <title>Merc Booking – Etageoversigt</title>
 
     <script src="../JavaScript/theme.js"></script>
+    <link rel="stylesheet" href="../CSS/loader.css">
+    <script src="../JavaScript/loader.js" defer></script>
 
     <link rel="stylesheet" href="../CSS/shared.css">
     <link rel="stylesheet" href="../CSS/etageOversigt.css">
     <link rel="stylesheet" href="../CSS/theme.css">
-
+    <link rel="stylesheet" href="../CSS/notifications.css">
+    <link rel="stylesheet" href="../CSS/confirmation.css">
+    
+    <script src="../JavaScript/confirmation.js" defer></script>
+    <script src="../JavaScript/notifications.js" defer></script>
     <script src="../JavaScript/session.js" defer></script>
     <script src="../JavaScript/script.js" defer></script>
     <script src="../JavaScript/etageOversigt.js" defer></script>
@@ -33,37 +39,37 @@
             <h1>Etageoversigt</h1>
 
             <p>
-                Vælg et niveau for at se skolens lokaler
+                Vælg en etage for at se skolens lokaler
                 og deres placering.
             </p>
 
             <div
                 class="floor-selector"
                 role="group"
-                aria-label="Vælg niveau"
+                aria-label="Vælg etage"
             >
                 <button type="button" data-floor="1" aria-pressed="true">
-                    Niveau 1
+                    Stueetagen
                 </button>
 
                 <button type="button" data-floor="2" aria-pressed="false">
-                    Niveau 2
+                    1. etage
                 </button>
 
                 <button type="button" data-floor="3" aria-pressed="false">
-                    Niveau 3
+                    2. etage
                 </button>
 
                 <button type="button" data-floor="4" aria-pressed="false">
-                    Niveau 4
+                    3. etage
                 </button>
 
                 <button type="button" data-floor="5" aria-pressed="false">
-                    Niveau 5
+                    4. etage
                 </button>
 
                 <button type="button" data-floor="6" aria-pressed="false">
-                    Niveau 6
+                    5. etage
                 </button>
             </div>
 
@@ -93,7 +99,16 @@
             </p>
         </aside>
 
-        <div id="floorViewer" class="floor-viewer"></div>
+        <div class="floor-display">
+            <div id="floorLoading"></div>
+
+            <div
+                id="floorViewer"
+                class="floor-viewer"
+                role="region"
+                aria-label="Plantegning"
+            ></div>
+        </div>
     </main>
 </body>
 </html>

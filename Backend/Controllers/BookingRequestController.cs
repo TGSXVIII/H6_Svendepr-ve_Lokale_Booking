@@ -393,7 +393,7 @@ public class BookingRequestsController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        return Ok("Din booking anmodning er blevet annulleret.");
+        return Ok("Din bookinganmodning er blevet annulleret.");
     }
 
     // DELETE: api/BookingRequests/delete/5

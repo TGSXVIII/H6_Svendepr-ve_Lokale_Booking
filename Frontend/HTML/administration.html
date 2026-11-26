@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Merc Booking – Administration</title>
+
+    <script src="../JavaScript/theme.js"></script>
+
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/administration.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+    <link rel="stylesheet" href="../CSS/loader.css">
+    <link rel="stylesheet" href="../CSS/notifications.css">
+    <link rel="stylesheet" href="../CSS/confirmation.css">
+
+    <script src="../JavaScript/confirmation.js" defer></script>
+    <script src="../JavaScript/notifications.js" defer></script>
+    <script src="../JavaScript/session.js" defer></script>
+    <script src="../JavaScript/script.js" defer></script>
+    <script src="../JavaScript/loader.js" defer></script>
+    <script src="../JavaScript/administration.js" defer></script>
+</head>
+
+<body class="admin-page">
+    <div id="sharedNavigation"></div>
+
+    <main class="admin-panel">
+        <a href="dashboard.html" aria-label="Til forsiden">
+            <img
+                class="admin-logo"
+                src="../../Utilities/Images/Merc_Booking.png"
+                alt="Merc Booking"
+            >
+        </a>
+
+        <p class="admin-eyebrow">Administration</p>
+        <h1>Administration</h1>
+        <p>Administrér skolens lokaler og brugere.</p>
+
+        <!-- Knapper til at skifte mellem lokaler og brugere -->
+        <div
+            class="admin-views"
+            role="group"
+            aria-label="Vælg administration"
+        >
+            <button
+                id="showRooms"
+                type="button"
+                aria-pressed="true"
+                aria-controls="roomsView"
+            >
+                Lokaler
+            </button>
+
+            <button
+                id="showUsers"
+                type="button"
+                aria-pressed="false"
+                aria-controls="usersView"
+            >
+                Brugere
+            </button>
+        </div>
+
+        <!-- Fælles loader for begge visninger -->
+        <div id="adminLoading"></div>
+
+        <!-- Lokaler -->
+        <div id="roomsView">
+            <p id="adminMessage" role="status">
+                Kontrollerer adgang...
+            </p>
+
+            <button
+                id="retryAdmin"
+                class="button"
+                type="button"
+                hidden
+            >
+                Prøv igen
+            </button>
+
+            <section
+                id="adminContent"
+                aria-label="Lokaleadministration"
+                hidden
+            >
+                <div class="admin-toolbar">
+                    <div class="form-field admin-search">
+                        <label for="roomSearch">Søg efter lokale</label>
+                        <input
+                            id="roomSearch"
+                            type="search"
+                            placeholder="Navn, nummer eller etage"
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="roomStatus">Status</label>
+                        <select id="roomStatus">
+                            <option value="all">Alle lokaler</option>
+                            <option value="active">Aktive</option>
+                            <option value="inactive">Inaktive</option>
+                        </select>
+                    </div>
+
+                    <button
+                        id="createRoom"
+                        class="button"
+                        type="button"
+                    >
+                        + Opret lokale
+                    </button>
+                </div>
+
+                <p id="roomCount" role="status"></p>
+
+                <div
+                    class="admin-table-wrapper"
+                    tabindex="0"
+                    role="region"
+                    aria-label="Lokaletabel"
+                >
+                    <table class="admin-table">
+                        <caption class="admin-sr-only">
+                            Skolens lokaler
+                        </caption>
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Lokale</th>
+                                <th scope="col">Etage</th>
+                                <th scope="col">Kapacitet</th>
+                                <th scope="col">Lokaletype</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Handlinger</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="roomsTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Brugere -->
+        <div id="usersView" hidden>
+            <section
+                id="usersContent"
+                aria-labelledby="usersTitle"
+                hidden
+            >
+                <h2 id="usersTitle">Brugere</h2>
+                <p>Se skolens brugere og ændr deres roller.</p>
+
+                <div class="admin-toolbar">
+                    <div class="form-field admin-search">
+                        <label for="userSearch">Søg efter bruger</label>
+                        <input
+                            id="userSearch"
+                            type="search"
+                            placeholder="Brugernavn eller e-mail"
+                        >
+                    </div>
+
+                    <button
+                        id="reloadUsers"
+                        class="button"
+                        type="button"
+                    >
+                        Opdater brugerliste
+                    </button>
+                </div>
+
+                <p id="usersMessage" role="status"></p>
+
+                <div
+                    class="admin-table-wrapper"
+                    tabindex="0"
+                    role="region"
+                    aria-label="Brugertabel"
+                >
+                    <table class="admin-table">
+                        <caption class="admin-sr-only">
+                            Skolens brugere
+                        </caption>
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Brugernavn</th>
+                                <th scope="col">E-mail</th>
+                                <th scope="col">Rolle</th>
+                                <th scope="col">Handling</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Dialog til oprettelse og redigering af lokaler -->
+    <dialog
+        id="roomEditor"
+        class="admin-dialog"
+        aria-labelledby="editorTitle"
+    >
+        <form id="roomEditorForm">
+            <div class="admin-dialog-heading">
+                <h2 id="editorTitle">Opret lokale</h2>
+
+                <button
+                    id="closeEditor"
+                    class="admin-close"
+                    type="button"
+                    aria-label="Luk formular"
+                >
+                    &times;
+                </button>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="form-field">
+                    <label for="roomName">Navn</label>
+                    <input id="roomName" type="text" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="roomNumber">Lokalenummer</label>
+                    <input id="roomNumber" type="text" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="roomFloor">Etage</label>
+                    <select id="roomFloor" required>
+                        <option value="">Vælg etage</option>
+                        <option value="Stue">Stueetagen</option>
+                        <option value="1">1. etage</option>
+                        <option value="2">2. etage</option>
+                        <option value="3">3. etage</option>
+                        <option value="4">4. etage</option>
+                        <option value="5">5. etage</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="roomCapacity">Antal pladser</label>
+                    <input
+                        id="roomCapacity"
+                        type="number"
+                        min="1"
+                        max="2147483647"
+                        step="1"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="roomCategory">Lokaletype</label>
+                    <select id="roomCategory" required></select>
+                </div>
+            </div>
+
+            <label id="activeField" class="admin-checkbox" hidden>
+                <input id="roomActive" type="checkbox">
+                Lokalet er aktivt
+            </label>
+
+            <p id="editorMessage" role="status"></p>
+
+            <div class="admin-dialog-actions">
+                <button
+                    id="cancelEditor"
+                    class="button button-secondary"
+                    type="button"
+                >
+                    Fortryd
+                </button>
+
+                <button
+                    id="saveRoom"
+                    class="button"
+                    type="submit"
+                >
+                    Opret lokale
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Bekræftelse af sletning -->
+    <dialog
+        id="deleteDialog"
+        class="admin-dialog"
+        aria-labelledby="deleteTitle"
+    >
+        <h2 id="deleteTitle">Slet lokale?</h2>
+
+        <p id="deleteSummary"></p>
+
+        <p>
+            Handlingen kan ikke fortrydes. Du kan i stedet gøre
+            lokalet inaktivt via Rediger.
+        </p>
+
+        <p id="deleteMessage" role="status"></p>
+
+        <div class="admin-dialog-actions">
+            <button
+                id="cancelDelete"
+                class="button button-secondary"
+                type="button"
+                autofocus
+            >
+                Behold lokale
+            </button>
+
+            <button
+                id="confirmDelete"
+                class="button admin-danger"
+                type="button"
+            >
+                Slet lokale
+            </button>
+        </div>
+    </dialog>
+</body>
+</html>
