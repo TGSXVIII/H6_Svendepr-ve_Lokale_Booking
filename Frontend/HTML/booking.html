@@ -4,18 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Merc Booking – Mine bookinger</title>
+    <title>Merc Booking – Bookinger</title>
 
     <script src="../JavaScript/theme.js"></script>
+    <link rel="stylesheet" href="../CSS/loader.css">
+    <script src="../JavaScript/loader.js" defer></script>
 
     <link rel="stylesheet" href="../CSS/shared.css">
     <link rel="stylesheet" href="../CSS/lokaleoversigt.css">
-    <link rel="stylesheet" href="../CSS/mineBookinger.css">
+    <link rel="stylesheet" href="../CSS/booking.css">
     <link rel="stylesheet" href="../CSS/theme.css">
+    <link rel="stylesheet" href="../CSS/notifications.css">
+    <link rel="stylesheet" href="../CSS/confirmation.css">
 
+    <script src="../JavaScript/notifications.js" defer></script>
+    <script src="../JavaScript/confirmation.js" defer></script>
     <script src="../JavaScript/session.js" defer></script>
     <script src="../JavaScript/script.js" defer></script>
+    <script src="../JavaScript/bookingShared.js" defer></script>
+    <script src="../JavaScript/bookinganmodninger.js" defer></script>
     <script src="../JavaScript/mineBookinger.js" defer></script>
+    <script src="../JavaScript/booking.js" defer></script>
 </head>
 
 <body class="rooms-page">
@@ -30,7 +39,7 @@
             >
         </a>
 
-        <h1>Mine bookinger</h1>
+<h1>Bookinger</h1>
 <p>Se dine reservationer og deres status.</p>
 
 <div id="bookingViews" class="booking-views" role="group" aria-label="Vælg visning" hidden>    
@@ -50,7 +59,7 @@
         aria-controls="approvalsPanel"
         hidden
     >
-        Booking anmodninger
+        Bookinganmodninger
     </button>
 </div>
 
@@ -75,6 +84,7 @@
             </a>
         </div>
 
+        <div id="bookingsLoading"></div>
         <p id="bookingsMessage" role="status"></p>
 
         <button id="retryBookings" class="button" type="button" hidden>
@@ -93,13 +103,12 @@
         aria-labelledby="approvalsTitle"
         hidden
     >
-        <h2 id="approvalsTitle">Booking anmodninger</h2>
+        <h2 id="approvalsTitle">Bookinganmodninger</h2>
 
-        <p>Her kan du behandle elevernes booking anmodninger.</p>
+        <p>Her kan du behandle elevernes bookinganmodninger.</p>
 
-        <p id="approvalsMessage" role="status">
-            Booking anmodninger er endnu ikke tilsluttet.
-        </p>
+        <div id="approvalsLoading"></div>
+        <p id="approvalsMessage" role="status"></p>
 
         <div id="approvalsList" class="bookings-list"></div>
     </section>

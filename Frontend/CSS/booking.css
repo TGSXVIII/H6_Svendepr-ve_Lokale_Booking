@@ -66,6 +66,12 @@
     color: #444;
 }
 
+.booking-status-rejected,
+.booking-status-cancelled {
+    background: #fde7e7;
+    color: #9b1c1c;
+}
+
 .booking-details {
     display: grid;
     gap: 12px;
@@ -105,40 +111,6 @@
     cursor: wait;
 }
 
-[data-theme="dark"] .bookings-filter select {
-    background: var(--theme-field);
-    color: var(--theme-text);
-    border-color: var(--theme-border);
-}
-
-[data-theme="dark"] .booking-details dt {
-    color: var(--theme-muted);
-}
-
-[data-theme="dark"] .booking-status-pending {
-    background: #493b1d;
-    color: #ffe09a;
-}
-
-[data-theme="dark"] .booking-status-booked {
-    background: #203e30;
-    color: #9ce5b6;
-}
-
-[data-theme="dark"] .booking-status-unknown {
-    background: #363947;
-    color: #eee;
-}
-
-[data-theme="dark"] .booking-cancel {
-    color: #ffb4ac;
-    border-color: #ffb4ac;
-}
-
-[data-theme="dark"] .booking-cancel:hover {
-    background: #422b30;
-}
-
 .booking-views {
     display: flex;
     flex-wrap: wrap;
@@ -171,32 +143,6 @@
     display: none;
 }
 
-[data-theme="dark"] .booking-views button {
-    border-color: var(--theme-link);
-    color: var(--theme-text);
-}
-
-[data-theme="dark"] .booking-views button:hover {
-    background: var(--theme-field);
-}
-
-[data-theme="dark"] .booking-views button[aria-pressed="true"] {
-    background: var(--brand-blue);
-    color: white;
-}
-
-.booking-status-rejected,
-.booking-status-cancelled {
-    background: #fde7e7;
-    color: #9b1c1c;
-}
-
-[data-theme="dark"] .booking-status-rejected,
-[data-theme="dark"] .booking-status-cancelled {
-    background: #422b30;
-    color: #ffb4ac;
-}
-
 .request-actions {
     display: flex;
     flex-wrap: wrap;
@@ -215,6 +161,61 @@
 .request-actions .button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Mørkt tema */
+[data-theme="dark"] .bookings-filter select {
+    background: var(--theme-field);
+    color: var(--theme-text);
+    border-color: var(--theme-border);
+}
+
+[data-theme="dark"] .booking-details dt {
+    color: var(--theme-muted);
+}
+
+[data-theme="dark"] .booking-status-pending {
+    background: #493b1d;
+    color: #ffe09a;
+}
+
+[data-theme="dark"] .booking-status-booked {
+    background: #203e30;
+    color: #9ce5b6;
+}
+
+[data-theme="dark"] .booking-status-unknown {
+    background: #363947;
+    color: #eee;
+}
+
+[data-theme="dark"] .booking-status-rejected,
+[data-theme="dark"] .booking-status-cancelled {
+    background: #422b30;
+    color: #ffb4ac;
+}
+
+[data-theme="dark"] .booking-cancel {
+    color: #ffb4ac;
+    border-color: #ffb4ac;
+}
+
+[data-theme="dark"] .booking-cancel:hover {
+    background: #422b30;
+}
+
+[data-theme="dark"] .booking-views button {
+    border-color: var(--theme-link);
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .booking-views button:hover {
+    background: var(--theme-field);
+}
+
+[data-theme="dark"] .booking-views button[aria-pressed="true"] {
+    background: var(--brand-blue);
+    color: white;
 }
 
 @media (max-width: 600px) {

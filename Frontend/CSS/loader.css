@@ -1,0 +1,118 @@
+.merc-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px 16px;
+    text-align: center;
+}
+
+.merc-loader[hidden],
+.merc-loader img[hidden] {
+    display: none;
+}
+
+.merc-loader-symbol {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+}
+
+.merc-loader-symbol::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgb(33 27 176 / 15%);
+    border-top-color: var(--brand-blue, #211bb0);
+    border-radius: 50%;
+    animation: merc-loader-spin 1s linear infinite;
+}
+
+.merc-loader-symbol img {
+    display: block;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    animation: merc-loader-pulse 1.8s ease-in-out infinite;
+}
+
+.merc-loader-text {
+    margin: 0;
+    color: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .merc-loader-symbol::before {
+    border-color: rgb(197 194 255 / 20%);
+    border-top-color: var(--theme-link, #c5c2ff);
+}
+
+[data-theme="dark"] .merc-loader-symbol img {
+    filter: brightness(0) invert(1);
+}
+
+@keyframes merc-loader-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes merc-loader-pulse {
+    0%, 100% {
+        opacity: 0.65;
+        transform: scale(0.94);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .merc-loader-symbol::before,
+    .merc-loader-symbol img {
+        animation: none;
+    }
+}
+
+/* Fuldskærmsloader – bruges kun på elementer med denne klasse. */
+.loader-overlay {
+    display: none;
+}
+
+.loader-overlay[aria-busy="true"] {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    display: grid;
+    place-items: center;
+
+    background: rgb(10 12 20 / 65%);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    cursor: progress;
+}
+
+.loader-overlay .merc-loader {
+    color: white;
+}
+
+.loader-overlay .merc-loader-symbol::before {
+    border-color: rgb(255 255 255 / 25%);
+    border-top-color: white;
+}
+
+.loader-overlay .merc-loader-symbol img {
+    filter: brightness(0) invert(1);
+}
+
+body:has(.loader-overlay[aria-busy="true"]) {
+    overflow: hidden;
+}

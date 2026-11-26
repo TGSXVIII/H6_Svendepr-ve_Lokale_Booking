@@ -1,0 +1,91 @@
+.site-notification {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    width: max-content;
+    max-width: calc(100% - 32px);
+    box-sizing: border-box;
+    padding: 16px 20px;
+
+    border: 1px solid #a3d9b5;
+    border-radius: 14px;
+    background: #dff4e7;
+    color: #145c32;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 20%);
+}
+
+.site-notification[hidden] {
+    display: none;
+}
+
+.site-notification-message {
+    min-width: 0;
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.site-notification-close {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+
+    width: 44px;
+    height: 44px;
+    padding: 0;
+
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.site-notification-close:hover {
+    background: rgb(0 0 0 / 8%);
+}
+
+.site-notification-close:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 2px;
+}
+
+.site-notification[data-type="error"] {
+    background: #fde7e7;
+    color: #9b1c1c;
+    border-color: #e6aaaa;
+}
+
+.site-notification[data-type="info"] {
+    background: #eeedff;
+    color: #302681;
+    border-color: #c5c2ff;
+}
+
+[data-theme="dark"] .site-notification {
+    background: #203e30;
+    color: #9ce5b6;
+    border-color: #527b63;
+}
+
+[data-theme="dark"] .site-notification[data-type="error"] {
+    background: #422b30;
+    color: #ffb4ac;
+    border-color: #9b6464;
+}
+
+[data-theme="dark"] .site-notification[data-type="info"] {
+    background: #353153;
+    color: #eeeaff;
+    border-color: #8d86c9;
+}
