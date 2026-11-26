@@ -262,7 +262,7 @@ public class UsersController : ControllerBase
             return NotFound();
 
         // Generate a random temporary password
-        const string characters = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
+        const string characters = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz1234567890!@#$%";
         var random = new Random();
         var temporaryPassword = new string(
             Enumerable.Range(0, 16)
