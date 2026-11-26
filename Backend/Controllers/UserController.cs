@@ -139,28 +139,21 @@ public class UsersController : ControllerBase
     [HttpPut("update/{id}")]
     public async Task<IActionResult> Update(int id, UserUpdateDTO updatedUser)
     {
-        var request = await _context.BookingRequests.FindAsync(id);
-
-        if (request == null)
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
             return NotFound();
-
+        
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!int.TryParse(userIdClaim, out var userId))
         {
             return Unauthorized();
         }
 
-        if (request.UserId != userId && !User.IsInRole("Admin"))
+        if (user.Id != userId && !User.IsInRole("Admin"))
         {
             return Forbid("Du kan ikke ændre andre brugers oplysninger.");
         }
 
-        var user = await _context.Users.FindAsync(id);
-
-        
-
-        if (user == null)
-            return NotFound();
 
         user.LastEditedById = userId;
         user.Username = updatedUser.Username;
