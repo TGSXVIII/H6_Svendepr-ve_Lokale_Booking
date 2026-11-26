@@ -14,7 +14,6 @@ const categoryInput = document.getElementById("roomCategory");
 const searchButton = searchForm.querySelector('button[type="submit"]');
 const roomsGrid = document.getElementById("roomsGrid");
 const searchMessage = document.getElementById("searchMessage");
-const roomsLoading = document.getElementById("roomsLoading");
 const bookingDialog = document.getElementById("bookingDialog");
 const bookingForm = document.getElementById("bookingForm");
 const bookingTitle = document.getElementById("bookingTitle");
@@ -38,10 +37,6 @@ if (equipmentFieldset) {
     for (const checkbox of equipmentFieldset.querySelectorAll("input")) {
         checkbox.checked = false;
     }
-
-    const note = document.createElement("p");
-    note.className = "equipment-note";
-    equipmentFieldset.append(note);
 }
 
 function getLocalDate() {
@@ -188,7 +183,28 @@ function populateFilters() {
 function renderRooms(list) {
     roomsGrid.replaceChildren();
 
-    for (const room of list) {
+    const sortedRooms = [...list].sort((a, b) => {
+        // Ved søgning: mindste passende lokale først.
+        if (currentSearch) {
+            const capacityDifference = a.capacity - b.capacity;
+
+            if (capacityDifference !== 0) {
+                return capacityDifference;
+            }
+        }
+
+        // Før søgning eller ved samme kapacitet: alfabetisk.
+        return getRoomTitle(a).localeCompare(
+            getRoomTitle(b),
+            "da",
+            {
+                numeric: true,
+                sensitivity: "base"
+            }
+        );
+    });
+
+    for (const room of sortedRooms) {
         const card = document.createElement("article");
         card.className = "room-card";
 
@@ -212,7 +228,7 @@ function renderRooms(list) {
         const button = addText(
             card,
             "button",
-            currentSearch ? "Se booking" : "Vælg tidsrum først",
+            currentSearch ? "Vælg Lokale" : "Vælg tidsrum først",
             "button"
         );
 
@@ -233,10 +249,10 @@ async function loadRooms() {
     searchMessage.textContent = "Henter lokaler...";
     roomsGrid.setAttribute("aria-busy", "true");
 
-    // Undgå et hurtigt blink, hvis API'et svarer med det samme.
-    const loadingTimer = setTimeout(() => {
-        roomsLoading.hidden = false;
-    }, 150);
+    const stopLoading = MercLoader.start(
+        "#roomsLoading",
+        "Henter lokaler..."
+    );
 
     try {
         if (!hasActiveLogin()) {
@@ -351,8 +367,7 @@ async function loadRooms() {
             new Option("Kunne ikke hente lokaletyper", "")
         );
     } finally {
-        clearTimeout(loadingTimer);
-        roomsLoading.hidden = true;
+        stopLoading();
         roomsGrid.setAttribute("aria-busy", "false");
     }
 }
@@ -511,21 +526,6 @@ bookingPurpose.addEventListener("input", () => {
 });
 
 updatePurposeCounter();
-
-const bookingNotification =
-    document.getElementById("bookingNotification");
-
-let bookingNotificationTimer;
-
-function showBookingNotification(text) {
-    clearTimeout(bookingNotificationTimer);
-
-    bookingNotification.textContent = text;
-
-    bookingNotificationTimer = setTimeout(() => {
-        bookingNotification.textContent = "";
-    }, 6000);
-}
 
 bookingForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -694,7 +694,7 @@ bookingForm.addEventListener("submit", async (event) => {
             : "Din booking er gemt. Du kan se den under Mine bookinger.";
 
         searchMessage.textContent = confirmation;
-        showBookingNotification(confirmation);
+        MercNotifications.show(confirmation);
 
     } catch (error) {
         console.error("Kunne ikke sende reservation:", error);

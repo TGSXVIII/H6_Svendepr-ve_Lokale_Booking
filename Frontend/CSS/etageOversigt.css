@@ -124,14 +124,14 @@
     box-sizing: border-box;
 }
 
-.floor-viewer a {
+.floor-viewer > a {
     display: block;
     width: 100%;
     height: 100%;
     cursor: zoom-in;
 }
 
-.floor-viewer img {
+.floor-viewer > a > img {
     display: block;
     width: 100%;
     height: 100%;
@@ -141,6 +141,43 @@
 .floor-viewer a:focus-visible {
     outline: 3px solid #211bb0;
     outline-offset: -3px;
+}
+
+.floor-display {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+}
+
+.floor-error {
+    margin: 0;
+    padding: 24px;
+    line-height: 1.5;
+}
+
+.floor-display {
+    position: relative;
+}
+
+#floorLoading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    .floor-display {
+        min-height: 280px;
+    }
+}
+
+@media (max-width: 900px) {
+    .floor-display {
+        height: auto;
+        min-height: 180px;
+    }
 }
 
 /* Mindre skærme: betjening over plantegningen. */
@@ -165,8 +202,8 @@
     }
 
     .floor-viewer,
-    .floor-viewer a,
-    .floor-viewer img {
+    .floor-viewer > a,
+    .floor-viewer > a > img {
         height: auto;
     }
 }

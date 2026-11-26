@@ -32,12 +32,6 @@
     margin: 0 0 12px;
 }
 
-.demo-notice {
-    color: #555;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
 .room-filters {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -117,20 +111,6 @@
     cursor: not-allowed;
 }
 
-.booking-dialog {
-    position: relative;
-    width: min(460px, calc(100% - 32px));
-    max-height: calc(100dvh - 32px);
-    padding: 28px;
-    border: none;
-    border-radius: 20px;
-    color: var(--text-color);
-}
-
-.booking-dialog::backdrop {
-    background-color: rgb(0 0 0 / 50%);
-}
-
 .room-actions {
     grid-column: 1 / -1;
     display: flex;
@@ -155,55 +135,6 @@
     line-height: 1.4;
 }
 
-#bookingSummary {
-    margin: 0;
-    line-height: 1.6;
-    white-space: pre-line;
-}
-
-.booking-dialog .booking-close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    left: auto;
-
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-
-    border: none;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    font-size: 2rem;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.booking-dialog #bookingTitle {
-    padding-right: 40px;
-}
-
-#bookingPurpose {
-    display: block;
-    width: 100%;
-    height: 160px;
-    min-height: 160px;
-    max-height: 160px;
-    box-sizing: border-box;
-    padding: 14px;
-
-    resize: none;
-    overflow-y: auto;
-
-    border: 1px solid #bbb;
-    border-radius: 12px;
-    font: inherit;
-    line-height: 1.5;
-}
-
 .character-counter {
     margin: 6px 0 0;
     text-align: right;
@@ -211,112 +142,53 @@
     color: #555;
 }
 
-[data-theme="dark"] .character-counter {
-    color: var(--theme-muted);
+dialog.booking-dialog h2 {
+    margin-right: 48px; /* plads til luk-knappen */
 }
 
-.booking-notification {
-    position: fixed;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
+dialog.booking-dialog .form-field {
+    display: grid;
+    gap: 8px;
+    margin-top: 20px;
+}
 
-    width: max-content;
-    max-width: calc(100% - 32px);
-    padding: 16px 24px;
-
-    border: 1px solid #a3d9b5;
-    border-radius: 14px;
-    background: #dff4e7;
-    color: #145c32;
-    box-shadow: 0 4px 20px rgb(0 0 0 / 20%);
-
-    text-align: center;
+dialog.booking-dialog label {
     font-weight: 600;
-    pointer-events: none;
 }
 
-.booking-notification:empty {
-    padding: 0;
-    border: none;
-    box-shadow: none;
+dialog.booking-dialog textarea {
+    width: 100%;
+    min-height: 110px;
+    box-sizing: border-box;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #f8f8fc;
+    color: #171717;
+    font: inherit;
+    resize: vertical;
 }
 
-[data-theme="dark"] .booking-notification {
-    background: #203e30;
-    color: #9ce5b6;
-    border-color: #527b63;
+dialog.booking-dialog .character-counter {
+    text-align: right;
 }
 
-.brand-loader {
-    display: flex;
-    justify-content: center;
-    padding: 36px 0 16px;
+dialog.booking-dialog #bookingMessage {
+    margin-top: 12px;
 }
 
-.brand-loader[hidden] {
+dialog.booking-dialog #bookingMessage:empty {
     display: none;
 }
 
-.brand-loader-symbol {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 120px;
-    height: 120px;
+[data-theme="dark"] dialog.booking-dialog textarea {
+    background: var(--theme-field, #2a2e3c);
+    color: var(--theme-text, #f3f4fa);
+    border-color: var(--theme-border, #50566c);
 }
 
-.brand-loader-symbol::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 3px solid rgb(33 27 176 / 12%);
-    border-top-color: var(--brand-blue);
-    border-radius: 50%;
-    animation: brand-loader-spin 1.2s linear infinite;
-}
-
-.brand-loader-symbol img {
-    display: block;
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    animation: brand-loader-pulse 1.8s ease-in-out infinite;
-}
-
-@keyframes brand-loader-spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes brand-loader-pulse {
-    0%, 100% {
-        transform: scale(0.94);
-        opacity: 0.65;
-    }
-
-    50% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-[data-theme="dark"] .brand-loader-symbol::before {
-    border-color: rgb(197 194 255 / 15%);
-    border-top-color: var(--theme-link);
-}
-
-[data-theme="dark"] .brand-loader-symbol img {
-    filter: brightness(0) invert(1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .brand-loader-symbol::before,
-    .brand-loader-symbol img {
-        animation: none;
-    }
+[data-theme="dark"] .character-counter {
+    color: var(--theme-muted);
 }
 
 @media (max-width: 900px) {
